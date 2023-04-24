@@ -1,0 +1,25 @@
+---
+import Layout from '../layouts/Layout.astro';
+const title = 'Projects'
+import Projects from '../components/Projects.astro';
+---
+
+<Layout title={title}>
+	<main>
+		<Projects />
+	</main>
+</Layout>
+
+<style>
+	main {
+		margin: 1rem;
+		padding: 1rem;
+		/*max-width: 100vh;
+		max-height: 100vh;*/
+	}
+	p{
+		color: azure;
+		font-size: large;
+	}
+	
+</style>

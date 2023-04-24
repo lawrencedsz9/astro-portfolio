@@ -1,0 +1,76 @@
+---
+import Social from "./social.astro";
+---
+
+<footer class="footer">
+  <div class="container">
+    <div>
+      <p>
+        © 2023 Lawrence Dsouza. Source code on <a
+          href="https://github.com/lawrencedsz9">github</a
+        > to learn more.
+      </p>
+    </div>
+    <div>
+      <h3>Links</h3>
+      <ul>
+        <li><a href="/about">About</a></li>
+        <li><a href="/projects">Projects</a></li>
+        <li><a href="/contact">contact</a></li>
+      </ul>
+    </div>
+    <div class="soc">
+      <Social platform="Github" username="lawrence dsouza">
+        <img src="/Github.png" class="logo" />
+      </Social>
+      <Social platform="LinkedIn" username="lawrence dsouza">
+        <img src="/linkedin.png" class="logo" />
+      </Social>
+      <Social platform="Twitter" username="lawrence dsouza">
+        <img src="/twitter.png" class="logo" />
+      </Social>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--color-primary);
+    color: azure;
+    text-align: center;
+    padding: 20px;
+    padding-top: auto;
+    gap: 10;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-top: auto;
+    bottom: 0;
+  }
+
+  .footer .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer a {
+    color: #a741ff;
+  }
+
+  .footer a:hover {
+    text-decoration: underline;
+  }
+
+  .footer h3 {
+  }
+
+  .footer div:nth-child(1) {
+    text-align: left;
+  }
+
+  @media (max-width: 500px) {
+    .footer div:nth-child(2) {
+      display: none;
+    }
+  }
+</style>

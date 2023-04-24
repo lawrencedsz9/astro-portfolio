@@ -1,0 +1,71 @@
+---
+
+const {frontmatter} = Astro.props;
+---
+<div class="box">
+<div class="container">
+  <h1>{frontmatter.title}</h1>
+  <p><b>{frontmatter.status} </b></p>
+  <p>{frontmatter.description}</p>
+  <slot/>
+  <p><a href={frontmatter.link} class="btn">View Source Code</a></p>
+</div>
+</div>
+
+<style>
+    .container {
+        background: #2a2828a8;
+        border-radius: 1rem;
+        box-shadow: 0 0 1rem rgba(208, 205, 205, 0.168);
+        padding: 3rem;
+        width: 90%;
+        font-weight: 600;
+    }
+
+    .box {
+        display: flex;
+        justify-content: center;
+        padding: 1rem;
+        padding-top: 2rem;
+        color: azure;
+    }
+
+    @media (max-width: 600px) {
+        .container {
+            width: 100%;
+            padding: 1.5rem;
+        }
+        .box {
+            padding: 0.7rem;
+            padding-top: 1rem;
+            width: 100%;
+        }
+    }
+
+    .btn{
+        background: azure;
+        border: 0.1rem solid rgb(5, 49, 95);
+        border-radius: 0.3rem;
+        color: rgb(5, 49, 95);
+        cursor: pointer;
+        display: inline-block;
+        font-size: 1rem;
+        font-weight: 600;
+        padding: 0.5rem 1rem;
+        text-decoration: none;
+        transition: all 0.2s ease-in-out;
+        
+    }
+    .btn:hover {
+        background: rgba(11, 13, 59, 0.894);
+        box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+        transform: translateY(-0.2rem);
+        color: #fff;
+    }
+
+</style>
+
+
+
+
+
