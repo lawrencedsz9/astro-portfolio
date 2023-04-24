@@ -17,7 +17,7 @@ export const projects = [
     {
         name: "Portfolio-ASTRO",
         description: "The Portfolio website developed with Astro",
-        link: "https://google.com",
+        link: "https://github.com/lawrencedsz9/astro-webs",
         stack: ["Check out the Source Code"],
     },
     {
