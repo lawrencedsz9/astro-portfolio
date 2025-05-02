@@ -1,15 +1,33 @@
 ---
 const { platform, username } = Astro.props;
+
+const getUrl = (platform: string, username: string) => {
+  switch (platform.toLowerCase()) {
+    case 'github':
+      return `https://github.com/${username}`;
+    case 'linkedin':
+      return `https://linkedin.com/in/${username}`;
+    case 'twitter':
+      return `https://twitter.com/${username}`;
+    default:
+      return '#';
+  }
+};
 ---
-<a href={`https://www.${platform}.com/${username}`}><slot/></a>
+<a href={getUrl(platform, username)} target="_blank" rel="noopener noreferrer">
+  <slot/>
+</a>
 
 <style>
-    a{
-        padding: 3px 10px;
-        width: 20px;
-        color: black;
-        background-color: none;
-        text-decoration: none;
-    }
-    
+  a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+  }
+  
+  a:hover {
+    transform: translateY(-2px);
+  }
 </style>

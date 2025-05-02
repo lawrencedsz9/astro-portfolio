@@ -4,31 +4,29 @@ import Social from "./social.astro";
 
 <footer class="footer">
   <div class="container">
-    <div>
-      <p>
-        © 2023 Lawrence Dsouza. Source code on <a
-          href="https://github.com/lawrencedsz9">github</a
-        > to learn more.
-      </p>
-    </div>
-    <div>
-      <h3>Links</h3>
-      <ul>
-        <li><a href="/about">About</a></li>
-        <li><a href="/projects">Projects</a></li>
-        <li><a href="/contact">contact</a></li>
-      </ul>
-    </div>
-    <div class="soc">
-      <Social platform="Github" username="lawrence dsouza">
-        <img src="/Github.png" class="logo" />
-      </Social>
-      <Social platform="LinkedIn" username="lawrence dsouza">
-        <img src="/linkedin.png" class="logo" />
-      </Social>
-      <Social platform="Twitter" username="lawrence dsouza">
-        <img src="/twitter.png" class="logo" />
-      </Social>
+    <div class="footer-content">
+      <p class="copyright">@2023 Lawrence Dsouza. All rights reserved.</p>
+
+      <nav class="footer-links">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/about">About</a></li>
+          <li><a href="/projects">Projects</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="social-links">
+        <Social platform="github" username="lawrencedsz9">
+          <img src="/Github.png" class="social-icon" alt="GitHub" width="20" height="20" />
+        </Social>
+        <Social platform="linkedin" username="lawrence-dsouza">
+          <img src="/linkedin.png" class="social-icon" alt="LinkedIn" width="20" height="20" />
+        </Social>
+        <Social platform="twitter" username="lawrence_dsouza">
+          <img src="/twitter.png" class="social-icon" alt="Twitter" width="20" height="20" />
+        </Social>
+      </div>
     </div>
   </div>
 </footer>
@@ -36,41 +34,84 @@ import Social from "./social.astro";
 <style>
   .footer {
     background: var(--color-primary);
-    color: azure;
-    text-align: center;
-    padding: 20px;
-    padding-top: auto;
-    gap: 10;
-    flex-direction: column;
-    justify-content: space-between;
-    margin-top: auto;
-    bottom: 0;
+    color: var(--color-text);
+    padding: 1rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    z-index: 10;
   }
 
-  .footer .container {
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  .footer-content {
     display: flex;
+    align-items: center;
     justify-content: space-between;
+    gap: 2rem;
+  }
+
+  .copyright {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  .footer-links ul {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .footer-links ul li a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color 0.3s ease;
+    font-size: 0.9rem;
+    padding: 0.5rem 0;
+  }
+
+  .footer-links ul li a:hover {
+    color: var(--color-accent);
+  }
+
+  .social-links {
+    display: flex;
+    gap: 1.5rem;
     align-items: center;
   }
 
-  .footer a {
-    color: #a741ff;
+  .social-icon {
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
   }
 
-  .footer a:hover {
-    text-decoration: underline;
+  .social-icon:hover {
+    opacity: 1;
   }
 
-  .footer h3 {
-  }
+  @media (max-width: 768px) {
+    .footer-content {
+      flex-direction: column;
+      gap: 1rem;
+      text-align: center;
+      padding: 1rem 0;
+    }
 
-  .footer div:nth-child(1) {
-    text-align: left;
-  }
+    .footer-links ul {
+      justify-content: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
 
-  @media (max-width: 500px) {
-    .footer div:nth-child(2) {
-      display: none;
+    .social-links {
+      justify-content: center;
     }
   }
 </style>
