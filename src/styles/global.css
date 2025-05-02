@@ -1,7 +1,12 @@
 :root {
-    --color-primary: 	#000000;
-    --color-secondary: #fff;
-  }
+    --color-primary: #1a1a2e;
+    --color-primary-rgb: 26, 26, 46;
+    --color-secondary: #0f3460;
+    --color-accent: #e94560;
+    --color-text: #ffffff;
+    --color-text-muted: rgba(255, 255, 255, 0.8);
+    --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+}
   
   *,
   *::before,
@@ -15,8 +20,8 @@
     font-family: 'Roboto', sans-serif;
     font-size: 16px;
     line-height: 1.5;
-    background: #fff;
-    color: #000000;
+    background: var(--color-primary);
+    color: var(--color-text);
   }
   
   a {

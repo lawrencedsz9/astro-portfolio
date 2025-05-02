@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import logo from '../images/user.png'
 ---
 
@@ -6,55 +7,144 @@ import logo from '../images/user.png'
   <div class="container">
     <div class="logo">
       <a href="/" class="profile">
-        <img src={logo} alt=""/>
-        <span class="name"><b>Lawrence Dsouza</b></span>
+        <Image src={logo} alt="Profile" width={60} height={60} />
+        <span class="name">Lawrence Dsouza</span>
       </a>
     </div>
-    <nav>
+    <nav class="nav">
       <ul>
+        <li><a href="/">Home</a></li>
         <li><a href="/about">About</a></li>
         <li><a href="/projects">Projects</a></li>
-        <li><a href="/contact">contact</a></li>
+        <li><a href="/contact">Contact</a></li>
       </ul>
     </nav>
   </div>
 </header>
 
 <style>
-.profile {
-  color: #fff;
-  padding-right: 100px;
-}
-.name{
+  .header {
+    height: 70px;
+    background: rgba(var(--color-primary-rgb), 0.8);
+    backdrop-filter: blur(8px);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    transition: all 0.3s ease;
+  }
 
-}
-.header {
-  height: 70px;
-  background: var(--color-primary);
-}
+  .header:hover {
+    background: var(--color-primary);
+  }
 
-.header .container {
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
-}
+  .header .container {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
 
-.header img {
-  height: 35px;
-  vertical-align: middle;
-}
+  .profile {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: #fff;
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+    padding-right: 1rem;
+  }
 
-.header nav ul {
-  display: flex;
-}
+  .profile:hover {
+    opacity: 0.9;
+  }
 
-.header nav ul li {
-  padding: 0 10px;
-}
+  .name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    white-space: nowrap;
+    color: #fff;
+    display: block;
+  }
 
-.header nav ul li a {
-  color: #fff;
-}
+  .header img {
+    height: 60px;
+    width: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .nav ul {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+  }
+
+  .nav ul li a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--color-secondary);
+    transition: width 0.3s ease;
+  }
+
+  .nav ul li a:hover::after {
+    width: 100%;
+  }
+
+  .nav ul li a:hover {
+    color: var(--color-secondary);
+  }
+
+  @media (max-width: 768px) {
+    .header .container {
+      padding: 0 1rem;
+    }
+
+    .profile {
+      gap: 0.5rem;
+    }
+
+    .name {
+      font-size: 1rem;
+    }
+
+    .nav ul {
+      gap: 1rem;
+    }
+
+    .nav ul li a {
+      font-size: 0.9rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .profile {
+      padding-right: 0;
+    }
+    
+    .name {
+      font-size: 0.9rem;
+    }
+  }
 </style>

@@ -10,7 +10,11 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/netlify": "^2.2.2",
-    "astro": "^2.3.0"
+    "@astrojs/netlify": "^6.3.2",
+    "astro": "^5.7.10"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.26.0",
+    "globals": "^16.0.0"
   }
 }
