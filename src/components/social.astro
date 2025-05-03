@@ -15,19 +15,23 @@ const getUrl = (platform: string, username: string) => {
 };
 ---
 <a href={getUrl(platform, username)} target="_blank" rel="noopener noreferrer">
-  <slot/>
+  <slot />
 </a>
 
 <style>
   a {
     display: flex;
     align-items: center;
-    justify-content: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 0.5rem;
     text-decoration: none;
-    transition: transform 0.3s ease;
+    color: var(--color-text);
+    transition: all 0.25s ease;
   }
   
   a:hover {
-    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.1);
   }
 </style>

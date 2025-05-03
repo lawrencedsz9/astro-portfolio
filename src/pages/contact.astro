@@ -1,107 +1,198 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Social from "../components/social.astro";
-const title = "Contact Me!";
+const title = "Get in Touch";
 ---
 
 <Layout title={title}>
-  <div id="black">
   <main>
-    <h1>{title}</h1>
-    <div class="soc">
-      <span>  
-        If you have a question or just want to say hi,
-You can find me on social media</span>
-<p>
-        <ul>
-          <li>
+    <div class="contact-container">
+      <div class="contact-content">
+        <h1>{title}</h1>
+        <p class="contact-intro">
+          If you have a question or just want to say hi,
+          you can find me on social media
+        </p>
+        <div class="social-links">
+          <div class="social-item">
             <Social platform="Github" username="lawrencedsz9">
-              <img src="/Github.png" class="logo" />
-              <span>you can find my code on <b>GitHub</b>.</span>
+              <img src="/Github.png" alt="GitHub" class="social-icon" />
+              <div class="social-text">
+                <h3>GitHub</h3>
+                <p>Check out my code</p>
+              </div>
             </Social>
-          </li>
-          <li>
+          </div>
+
+          <div class="social-item">
             <Social platform="LinkedIn" username="lawrencedsouza">
-              <img src="/linkedin.png" class="logo" /><span>
-                View my <b>LinkedIn</b> profile.</span>
+              <img src="/linkedin.png" alt="LinkedIn" class="social-icon" />
+              <div class="social-text">
+                <h3>LinkedIn</h3>
+                <p>Connect with me</p>
+              </div>
             </Social>
-          </li>
-          <li>
-            <a href="mailto:lawrencedsouza125@gmail.com">
-              <img src="/email.png" class="logo" />
-              <span> Mail me at <b>lawrencedsouza125@gmail.com</b></span></a
-            >
-          </li>
-          <li>
+          </div>
+
+          <div class="social-item">
+            <a href="mailto:lawrencedsouza125@gmail.com" class="email-link">
+              <img src="/email.png" alt="Email" class="social-icon" />
+              <div class="social-text">
+                <h3>Email</h3>
+                <p>lawrencedsouza125@gmail.com</p>
+              </div>
+            </a>
+          </div>
+
+          <div class="social-item">
             <Social platform="Twitter" username="lawrencedsouza">
-              <img src="/twitter.png" class="logo" /><span>
-                Follow me on <b>Twitter</b>.</span>
+              <img src="/twitter.png" alt="Twitter" class="social-icon" />
+              <div class="social-text">
+                <h3>Twitter</h3>
+                <p>Follow me</p>
+              </div>
             </Social>
-          </li>
-        </ul>
-      </p>
+          </div>
+        </div>
+      </div>
     </div>
   </main>
-  </div>
 </Layout>
+
 <style>
-  #black {
-    background-color: #000000;
-  }
-
   main {
-    margin: 1rem;
-    padding: 120px 100px;
-    /*max-width: 100vh;
-      max-height: 100vh;*/
-  }
-  a {
-    padding: 3px 10px;
-    width: 20px;
-    background-color: none;
-    text-decoration: none;
-    align-items: center;
+    min-height: calc(100vh - 70px);
+    background: var(--color-primary);
+    padding-top: 70px;
+    width: 100%;
   }
 
-  b:hover {
-    background-color: azure;
-    color: rgb(5, 49, 95);
-    transition: all 250ms ease-in-out;
+  .contact-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
   }
 
-  .soc {
-    text-align: left;
-    align-items: center;
-    line-height: 3;
+  .contact-content {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   }
-  .logo {
-    width: 30px;
-    transition: all 250ms ease-in-out;
+
+  h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    background: linear-gradient(to right, var(--color-text), var(--color-accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
-  ul {
-    list-style-type: none;
+
+  .contact-intro {
+    color: var(--color-text-muted);
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 1.2rem;
+    line-height: 1.5;
+  }
+
+  .social-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+
+  .social-item {
+    transition: transform 0.25s ease;
+  }
+
+  .social-item:hover {
+    transform: translateY(-3px);
+  }
+
+  .social-item a, .email-link {
+    display: flex;
     align-items: center;
+    gap: 1rem;
     padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 0.5rem;
+    text-decoration: none;
+    color: var(--color-text);
+    transition: all 0.25s ease;
   }
 
-  span {
-    color: #fff;
-  }
-  .logo:hover {
-    transform: scale(1.3);
+  .social-item a:hover, .email-link:hover {
+    background: rgba(255, 255, 255, 0.1);
   }
 
-  @media (max-width: 600px) {
-    main {
-      margin: 0.5rem;
-      padding: 0.5rem;
+  .social-icon {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+    transition: transform 0.25s ease;
+  }
+
+  .social-item:hover .social-icon {
+    transform: scale(1.2);
+  }
+
+  .social-text h3 {
+    font-size: 1.1rem;
+    margin: 0;
+    color: var(--color-text);
+  }
+
+  .social-text p {
+    margin: 0.15rem 0 0;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+  }
+
+  @media (max-width: 768px) {
+    .contact-container {
+      padding: 1rem;
     }
-    span {
-      font-size: 0.8rem;
-    }
+
     h1 {
       font-size: 2.5rem;
-      margin-top: 0px;
+    }
+
+    .contact-intro {
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .social-links {
+      grid-template-columns: 1fr;
+    }
+
+    .social-item a, .email-link {
+      padding: 0.75rem;
+    }
+
+    .social-icon {
+      width: 25px;
+      height: 25px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    h1 {
+      font-size: 2rem;
+    }
+
+    .contact-content {
+      padding: 1.5rem;
+    }
+
+    .social-text h3 {
+      font-size: 1rem;
+    }
+
+    .social-text p {
+      font-size: 0.8rem;
     }
   }
 </style>

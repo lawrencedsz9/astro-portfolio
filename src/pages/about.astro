@@ -1,27 +1,245 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Card from '../components/Card.astro'
+import { Image } from 'astro:assets';
+import profileImg from '../images/layer.jpg';
 
-
+const techStack = [
+  { name: 'HTML', icon: '🌐' },
+  { name: 'CSS', icon: '🎨' },
+  { name: 'JavaScript', icon: '⚡' },
+  { name: 'Python', icon: '🐍' },
+  { name: 'C++', icon: '⚙️' },
+  { name: 'Firestore', icon: '🔥' },
+  { name: 'Git', icon: '📦' },
+  { name: 'GitHub', icon: '🐱' },
+  { name: 'Flutter', icon: '📱' },
+];
 ---
 
-<Layout title="About ME">
-  <section class="page-content">
+<Layout title="About Me">
+  <section class="about-section">
     <div class="container">
-      <h2>About ME</h2>
-      <p>
-        "Hello there! I'm a dedicated and driven student who's passionate about pursuing my dreams and reaching my full potential. I believe that hard work and perseverance are the keys to success, and I'm always willing to go the extra mile to achieve my goals. Whether it's studying late into the night or taking on challenging projects, I'm up for the challenge.
-      </p>
+      <div class="about-content">
+        <div class="about-text">
+          <h1>Hello there!</h1>
+          <p class="intro">
+            I'm lawrence, pursuing engineering in Computer Science and Engineering (DataScience) at St Joseph Engineering College, Mangalore. 
+          </p>
+          <p>
+            I believe that hard work and perseverance are the keys to success, 
+            and I'm always willing to go the extra mile to achieve my goals.
+          </p>
 
-      <Card dark={true}>
-        <h3>WHAT I DO KNOW!</h3>
-        <p>
-          I'm still in my learning phase and would love to explore and implement new technologies in my projects.
-I'm familiar with HTML, CSS, C++,  Git and Github. I'm currently learning Astro.
-        </p>
-      </Card>
-      <h3>Computer science student at SJEC</h3>
-   
+          <div class="tech-stack">
+            <h2>Tech Stack</h2>
+            <div class="tech-grid">
+              {techStack.map((tech) => (
+                <div class="tech-item">
+                  <span class="tech-icon">{tech.icon}</span>
+                  <span class="tech-name">{tech.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div class="about-image">
+          <Image
+            src={profileImg}
+            alt="Profile Image"
+            width={400}
+            height={500}
+            format="webp"
+            quality={80}
+            class="profile-img"
+          />
+        </div>
+      </div>
     </div>
   </section>
 </Layout>
+
+<style>
+  .about-section {
+    padding: 6rem 0;
+    min-height: 100vh;
+    background: var(--color-primary);
+    color: var(--color-text);
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  .about-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+
+  .about-text {
+    animation: fadeInUp 1s ease-out;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(to right, var(--color-text), var(--color-accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  h2 {
+    font-size: 1.8rem;
+    margin: 2rem 0 1rem;
+    color: var(--color-accent);
+  }
+
+  .intro {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+    margin-bottom: 2rem;
+  }
+
+  .education-item {
+    margin-bottom: 1.5rem;
+  }
+
+  .education-item h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .education-item p {
+    color: var(--color-text-muted);
+  }
+
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .tech-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    transition: transform 0.3s ease, background 0.3s ease;
+  }
+
+  .tech-item:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .tech-icon {
+    font-size: 2rem;
+    transition: transform 0.3s ease;
+  }
+
+  .tech-item:hover .tech-icon {
+    transform: scale(1.1);
+  }
+
+  .tech-name {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+  }
+
+  .about-image {
+    position: relative;
+    animation: fadeInRight 1s ease-out;
+  }
+
+  .profile-img {
+    width: 100%;
+    height: auto;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+  }
+
+  .about-image::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: -20px;
+    bottom: -20px;
+    border: 2px solid var(--color-accent);
+    border-radius: 20px;
+    z-index: -1;
+    animation: borderAnimation 3s ease-in-out infinite;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeInRight {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes borderAnimation {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+  }
+
+  @media (max-width: 968px) {
+    .about-content {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+
+    .about-image {
+      order: -1;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 2rem;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .tech-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .about-section {
+      padding: 4rem 0;
+    }
+  }
+</style>

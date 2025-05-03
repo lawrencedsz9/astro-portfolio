@@ -1,13 +1,13 @@
 ---
 import { Image } from 'astro:assets';
-import logo from '../images/user.png'
+import logo from '../images/user.png';
 ---
 
 <header class="header">
   <div class="container">
     <div class="logo">
       <a href="/" class="profile">
-        <Image src={logo} alt="Profile" width={60} height={60} />
+        <img src={logo.src} alt="Profile" width="60" height="60" />
         <span class="name">Lawrence Dsouza</span>
       </a>
     </div>
