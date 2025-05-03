@@ -9,8 +9,8 @@ const getUrl = (platform: string, username: string) => {
       if (username.startsWith('http')) {
         return username;
       }
-      if (username.startsWith('in/')) {
-        return `https://www.linkedin.com/${username}`;
+      if (username.startsWith('linkedin.com')) {
+        return `https://${username}`;
       }
       return `https://www.linkedin.com/in/${username}`;
     case 'twitter':
@@ -30,14 +30,13 @@ const getUrl = (platform: string, username: string) => {
     align-items: center;
     gap: 1rem;
     padding: 1rem;
-    background: rgba(255, 255, 255, 0.05);
     border-radius: 0.5rem;
     text-decoration: none;
     color: var(--color-text);
-    transition: all 0.25s ease;
+    transition: all 0.3s ease;
   }
   
   a:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
   }
 </style>

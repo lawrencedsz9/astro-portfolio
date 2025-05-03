@@ -1,12 +1,14 @@
 ---
 import Social from "./social.astro";
+const currentYear = new Date().getFullYear();
 ---
 
 <footer class="footer">
+  <div class="footer-gradient"></div>
   <div class="container">
     <div class="footer-content">
-      <p class="copyright">@2023 Lawrence Dsouza. All rights reserved.</p>
-
+      <p class="copyright">© 2023 Lawrence Dsouza. All Rights Reserved.</p>
+      
       <nav class="footer-links">
         <ul>
           <li><a href="/">Home</a></li>
@@ -17,14 +19,14 @@ import Social from "./social.astro";
       </nav>
 
       <div class="social-links">
-        <a href="https://github.com/lawrencedsz9" target="_blank" rel="noopener noreferrer" class="social-link">
-          <img src="/Github.png" class="social-icon" alt="GitHub" width="20" height="20" />
+        <a href="https://github.com/lawrencedsz9" target="_blank" rel="noopener noreferrer" aria-label="GitHub" class="social-link github">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
         </a>
-        <a href="https://www.linkedin.com/in/lawrencedsouza" target="_blank" rel="noopener noreferrer" class="social-link">
-          <img src="/linkedin.png" class="social-icon" alt="LinkedIn" width="20" height="20" />
+        <a href="https://www.linkedin.com/in/lawrence-dsouza-a15886337" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" class="social-link linkedin">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
         </a>
-        <a href="https://twitter.com/lawrence_dsouza" target="_blank" rel="noopener noreferrer" class="social-link">
-          <img src="/twitter.png" class="social-icon" alt="Twitter" width="20" height="20" />
+        <a href="https://x.com/Lawrenc83357878?t=efLHHGdqgQQC3HCOthz63g&s=09" target="_blank" rel="noopener noreferrer" aria-label="Twitter" class="social-link twitter">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path></svg>
         </a>
       </div>
     </div>
@@ -33,12 +35,21 @@ import Social from "./social.astro";
 
 <style>
   .footer {
-    background: var(--color-primary);
+    background: var(--color-secondary);
     color: var(--color-text);
-    padding: 1rem 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1.5rem 0;
     position: relative;
+    overflow: hidden;
     z-index: 10;
+  }
+
+  .footer-gradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
   }
 
   .container {
@@ -55,15 +66,16 @@ import Social from "./social.astro";
   }
 
   .copyright {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: var(--color-text-muted);
     margin: 0;
-    white-space: nowrap;
+    letter-spacing: 0.5px;
+    font-weight: 500;
   }
 
   .footer-links ul {
     display: flex;
-    gap: 2rem;
+    gap: 1.5rem;
     list-style: none;
     padding: 0;
     margin: 0;
@@ -72,51 +84,80 @@ import Social from "./social.astro";
   .footer-links ul li a {
     color: var(--color-text-muted);
     text-decoration: none;
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
     font-size: 0.9rem;
-    padding: 0.5rem 0;
+    padding: 0.25rem 0;
+    display: inline-block;
+    position: relative;
+  }
+
+  .footer-links ul li a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 1px;
+    background: var(--color-accent);
+    transition: width 0.3s ease;
   }
 
   .footer-links ul li a:hover {
     color: var(--color-accent);
   }
 
+  .footer-links ul li a:hover::after {
+    width: 100%;
+  }
+
   .social-links {
     display: flex;
-    gap: 1.5rem;
+    gap: 1rem;
     align-items: center;
   }
 
   .social-link {
-    display: inline-block;
-    transition: transform 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--color-text-muted);
+    transition: all 0.3s ease;
   }
 
-  .social-link:hover {
-    transform: translateY(-2px);
+  .social-link.github:hover {
+    background: #333;
+    color: white;
+    transform: translateY(-3px);
   }
 
-  .social-icon {
-    opacity: 0.7;
-    transition: opacity 0.3s ease;
+  .social-link.linkedin:hover {
+    background: #0077B5;
+    color: white;
+    transform: translateY(-3px);
   }
 
-  .social-icon:hover {
-    opacity: 1;
+  .social-link.twitter:hover {
+    background: #1DA1F2;
+    color: white;
+    transform: translateY(-3px);
   }
 
   @media (max-width: 768px) {
     .footer-content {
       flex-direction: column;
-      gap: 1rem;
       text-align: center;
+      gap: 1.5rem;
       padding: 1rem 0;
     }
 
     .footer-links ul {
       justify-content: center;
-      gap: 1.5rem;
       flex-wrap: wrap;
+      gap: 1rem 1.5rem;
     }
 
     .social-links {

@@ -1,18 +1,13 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import profileImg from '../images/layer.jpg';
+import { projects } from '../data.js';
 
-const techStack = [
-  { name: 'HTML', icon: '🌐' },
-  { name: 'CSS', icon: '🎨' },
-  { name: 'JavaScript', icon: '⚡' },
-  { name: 'Python', icon: '🐍' },
-  { name: 'C++', icon: '⚙️' },
-  { name: 'Firestore', icon: '🔥' },
-  { name: 'Git', icon: '📦' },
-  { name: 'GitHub', icon: '🐱' },
-  { name: 'Flutter', icon: '📱' },
-];
+// Extract unique technologies from projects
+const allTechnologies = projects.flatMap(project => project.stack);
+const uniqueTechnologies = [...new Set(allTechnologies)];
+
+// Remove the old tech stack array and just use the project-based technologies
 ---
 
 <Layout title="About Me">
@@ -30,14 +25,44 @@ const techStack = [
           </p>
 
           <div class="tech-stack">
-            <h2>Languages I'm familiar with</h2>
-            <div class="tech-grid">
-              {techStack.map((tech) => (
-                <div class="tech-item">
-                  <span class="tech-icon">{tech.icon}</span>
-                  <span class="tech-name">{tech.name}</span>
-                </div>
-              ))}
+            <h2>Tech Stack i'm familiar with</h2>
+            <div class="tech-icons">
+              <div class="tech-icon animate-float" style="animation-delay: 0s" title="Python">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M439.8 200.5c-7.7-30.9-22.3-54.2-53.4-54.2h-40.1v47.4c0 36.8-31.2 67.8-66.8 67.8H172.7c-29.2 0-53.4 25-53.4 54.3v101.8c0 29 25.2 46 53.4 54.3 33.8 9.9 66.3 11.7 106.8 0 26.9-7.8 53.4-23.5 53.4-54.3v-40.7H226.2v-13.6h160.2c31.1 0 42.6-21.7 53.4-54.2 11.2-33.5 10.7-65.7 0-108.6zM286.2 404c11.1 0 20.1 9.1 20.1 20.3 0 11.3-9 20.4-20.1 20.4-11 0-20.1-9.2-20.1-20.4.1-11.3 9.1-20.3 20.1-20.3zM167.8 248.1h106.8c29.7 0 53.4-24.5 53.4-54.3V91.9c0-29-24.4-50.7-53.4-55.6-35.8-5.9-74.7-5.6-106.8.1-45.2 8-53.4 24.7-53.4 55.6v40.7h106.9v13.6h-147c-31.1 0-58.3 18.7-66.8 54.2-9.8 40.7-10.2 66.1 0 108.6 7.6 31.6 25.7 54.2 56.8 54.2H101v-48.8c0-35.3 30.5-66.4 66.8-66.4zm-6.7-142.6c-11.1 0-20.1-9.1-20.1-20.3.1-11.3 9-20.4 20.1-20.4 11 0 20.1 9.2 20.1 20.4s-9 20.3-20.1 20.3z"/></svg>
+              </div>
+              <div class="tech-icon animate-float" style="animation-delay: 0.2s" title="HTML5">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="currentColor" d="M0 32l34.9 395.8L191.5 480l157.6-52.2L384 32H0zm308.2 127.9H124.4l4.1 49.4h175.6l-13.6 148.4-97.9 27v.3h-1.1l-98.7-27.3-6-75.8h47.7L138 320l53.5 14.5 53.7-14.5 6-62.2H84.3L71.5 112.2h241.1l-4.4 47.7z"/></svg>
+              </div>
+              <div class="tech-icon animate-float" style="animation-delay: 0.4s" title="CSS3">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="currentColor" d="M0 32l34.9 395.8L192 480l157.1-52.2L384 32H0zm313.1 80l-4.8 47.3L193 208.6l-.3.1h111.5l-12.8 146.6-98.2 28.7-98.8-29.2-6.4-73.9h48.9l3.2 38.3 52.6 13.3 54.7-15.4 3.7-61.6-166.3-.5v-.1l-.2.1-3.6-46.3L193.1 162l6.5-2.7H76.7L70.9 112h242.2z"/></svg>
+              </div>
+              <div class="tech-icon animate-float" style="animation-delay: 0.6s" title="JavaScript">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M0 32v448h448V32H0zm243.8 349.4c0 43.6-25.6 63.5-62.9 63.5-33.7 0-53.2-17.4-63.2-38.5l34.3-20.7c6.6 11.7 12.6 21.6 27.1 21.6 13.8 0 22.6-5.4 22.6-26.5V237.7h42.1v143.7zm99.6 63.5c-39.1 0-64.4-18.6-76.7-43l34.3-19.8c9 14.7 20.8 25.6 41.5 25.6 17.4 0 28.6-8.7 28.6-20.8 0-14.4-11.4-19.5-30.7-28l-10.5-4.5c-30.4-12.9-50.5-29.2-50.5-63.5 0-31.6 24.1-55.6 61.6-55.6 26.8 0 46 9.3 59.8 33.7L368 290c-7.2-12.9-15-18-27.1-18-12.3 0-20.1 7.8-20.1 18 0 12.6 7.8 17.7 25.9 25.6l10.5 4.5c35.8 15.3 55.9 31 55.9 66.2 0 37.8-29.8 58.6-69.7 58.6z"/></svg>
+              </div>
+              <div class="tech-icon animate-float" style="animation-delay: 0.8s" title="C++">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M10.5 15.97L10.91 18.41C10.65 18.55 10.23 18.68 9.67 18.8C9.1 18.93 8.43 19 7.66 19C5.45 18.96 3.79 18.3 2.68 17.04C1.56 15.77 1 14.16 1 12.21C1.05 9.9 1.72 8.13 3 6.89C4.32 5.64 5.96 5 7.94 5C8.69 5 9.34 5.07 9.88 5.19C10.42 5.31 10.82 5.44 11.08 5.59L10.5 8.08L9.44 7.74C9.04 7.64 8.58 7.59 8.05 7.59C6.89 7.58 5.93 7.95 5.18 8.69C4.42 9.42 4.03 10.54 4 12.03C4 13.39 4.37 14.45 5.08 15.23C5.79 16 6.79 16.4 8.07 16.41L9.4 16.29C9.83 16.21 10.19 16.1 10.5 15.97M11 11H13V9H15V11H17V13H15V15H13V13H11V11M18 11H20V9H22V11H24V13H22V15H20V13H18V11Z" /></svg>
+              </div>
+              <div class="tech-icon animate-float" style="animation-delay: 1.0s" title="OpenCV">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M11.5,9.5L16,5H8L11.5,9.5M16,14.5L11.5,19L8,14.5H16M16,5V14.5H19L19,5C19,5 16,5 16,5M8,14.5V5H5L5,14.5C5,14.5 5,19 8,19" /></svg>
+              </div>
+              <div class="tech-icon animate-float" style="animation-delay: 1.2s" title="Firebase">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M20 18.69L12.7 22.74c-.15.09-.3.15-.45.21-.15.07-.31.11-.48.11s-.33-.04-.48-.11c-.15-.07-.3-.12-.45-.21L4 18.69 17.05 5.54l.9.92 2.05-1.46L20 18.69M19.5 4.33L18 2.8l-1.5 1.53 1.5 1.5 1.5-1.5M9.1 10.18L7 12.3l2.1 2.1L16.5 7l-2.1-2.1-5.3 5.28z"/></svg>
+              </div>
+              <div class="tech-icon animate-float" style="animation-delay: 1.4s" title="SQL">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M12,3C7.58,3 4,4.79 4,7C4,9.21 7.58,11 12,11C16.42,11 20,9.21 20,7C20,4.79 16.42,3 12,3M4,9V12C4,14.21 7.58,16 12,16C16.42,16 20,14.21 20,12V9C20,11.21 16.42,13 12,13C7.58,13 4,11.21 4,9M4,14V17C4,19.21 7.58,21 12,21C16.42,21 20,19.21 20,17V14C20,16.21 16.42,18 12,18C7.58,18 4,16.21 4,14Z" /></svg>
+              </div>
+              <div class="tech-icon animate-float" style="animation-delay: 1.6s" title="Astro">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 1080"><path fill="currentColor" d="M904.17 346.72 820.82 475.6l-83.35-128.88-167.26 258.69H736.9l83.92-129.76 83.92 129.76h166.92L904.17 346.72ZM647.95 259.81l-83.35 128.88-83.35-128.88-167.6 258.69h166.92l83.92-129.76 83.92 129.76h166.92l-167.38-258.69ZM325.09 818.43c-102.33 0-185.15-31.92-185.15-71.26 0-26.12 34.28-48.55 86.86-61.74l17.58 30.45c-33.71 8.66-56.14 22.42-56.14 38.45 0 18.9 55.98 36.04 136.86 36.04s136.86-17.14 136.86-36.04c0-16.03-22.43-29.8-56.15-38.45l17.58-30.45c52.59 13.2 86.87 35.62 86.87 61.74-.01 39.34-82.84 71.26-185.17 71.26z"/></svg>
+              </div>
+              <div class="tech-icon animate-float" style="animation-delay: 1.8s" title="Git">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M2.6,10.59L8.38,4.8L10.07,6.5C9.83,7.35 10.22,8.28 11,8.73V14.27C10.4,14.61 10,15.26 10,16A2,2 0 0,0 12,18A2,2 0 0,0 14,16C14,15.26 13.6,14.61 13,14.27V9.41L15.07,11.5C15,11.65 15,11.82 15,12A2,2 0 0,0 17,14A2,2 0 0,0 19,12A2,2 0 0,0 17,10C16.82,10 16.65,10 16.5,10.07L13.93,7.5C14.19,6.57 13.71,5.55 12.78,5.16C12.35,5 11.9,4.96 11.5,5.07L9.8,3.38L10.59,2.6C11.37,1.81 12.63,1.81 13.41,2.6L21.4,10.59C22.19,11.37 22.19,12.63 21.4,13.41L13.41,21.4C12.63,22.19 11.37,22.19 10.59,21.4L2.6,13.41C1.81,12.63 1.81,11.37 2.6,10.59Z" /></svg>
+              </div>
+              <div class="tech-icon animate-float" style="animation-delay: 2.0s" title="GitHub">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C9.34,21.58 9.5,21.27 9.5,21C9.5,20.77 9.5,20.14 9.5,19.31C6.73,19.91 6.14,17.97 6.14,17.97C5.68,16.81 5.03,16.5 5.03,16.5C4.12,15.88 5.1,15.9 5.1,15.9C6.1,15.97 6.63,16.93 6.63,16.93C7.5,18.45 8.97,18 9.54,17.76C9.63,17.11 9.89,16.67 10.17,16.42C7.95,16.17 5.62,15.31 5.62,11.5C5.62,10.39 6,9.5 6.65,8.79C6.55,8.54 6.2,7.5 6.75,6.15C6.75,6.15 7.59,5.88 9.5,7.17C10.29,6.95 11.15,6.84 12,6.84C12.85,6.84 13.71,6.95 14.5,7.17C16.41,5.88 17.25,6.15 17.25,6.15C17.8,7.5 17.45,8.54 17.35,8.79C18,9.5 18.38,10.39 18.38,11.5C18.38,15.32 16.04,16.16 13.81,16.41C14.17,16.72 14.5,17.33 14.5,18.26C14.5,19.6 14.5,20.68 14.5,21C14.5,21.27 14.66,21.59 15.17,21.5C19.14,20.16 22,16.42 22,12A10,10 0 0,0 12,2Z" /></svg>
+              </div>
+              <div class="tech-icon animate-float" style="animation-delay: 2.2s" title="Flutter">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="currentColor" d="M14.314 0 2.3 12 6 15.7 21.684.013h-7.357L14.314 0zm.014 11.072L7.857 17.53l6.47 6.47H21.7l-6.46-6.468 6.46-6.46h-7.37z"/></svg>
+              </div>
             </div>
           </div>
         </div>
@@ -48,7 +73,8 @@ const techStack = [
             alt="Profile Image"
             width="400"
             height="500"
-            class="profile-img"
+            class="profile-img animate-float"
+            style="animation-duration: 6s"
           />
         </div>
       </div>
@@ -115,41 +141,55 @@ const techStack = [
     color: var(--color-text-muted);
   }
 
-  .tech-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  /* New Tech Stack styling with SVG icons */
+  .tech-stack {
+    margin-top: 2rem;
+  }
+
+  .tech-icons {
+    display: flex;
+    flex-wrap: wrap;
     gap: 1.5rem;
     margin-top: 1.5rem;
   }
 
-  .tech-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 1rem;
+  .tech-icon {
+    width: 40px;
+    height: 40px;
+    padding: 8px;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 8px;
     transition: transform 0.3s ease, background 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text);
+    cursor: pointer;
   }
 
-  .tech-item:hover {
+  .tech-icon:hover {
     transform: translateY(-5px);
     background: rgba(255, 255, 255, 0.1);
+    color: var(--color-accent);
   }
 
-  .tech-icon {
-    font-size: 2rem;
-    transition: transform 0.3s ease;
+  .tech-icon svg {
+    width: 100%;
+    height: 100%;
   }
 
-  .tech-item:hover .tech-icon {
-    transform: scale(1.1);
+  /* Animation for continuous floating */
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
   }
 
-  .tech-name {
-    font-size: 0.9rem;
-    color: var(--color-text-muted);
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
   }
 
   .about-image {
@@ -231,8 +271,8 @@ const techStack = [
   }
 
   @media (max-width: 480px) {
-    .tech-grid {
-      grid-template-columns: repeat(2, 1fr);
+    .tech-icons {
+      justify-content: center;
     }
 
     .about-section {
