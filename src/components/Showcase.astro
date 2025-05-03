@@ -1,6 +1,5 @@
 ---
-import { Image } from 'astro:assets';
-import logos from '../images/invent.png'
+import logos from '../images/invent.png';
 
 export interface Props {
   heading?: string;
@@ -34,11 +33,11 @@ const {
       {showExtra && (
         <div class="showcase-img">
           <div class="img-wrapper">
-            <Image 
-              src={logos} 
+            <img 
+              src={logos.src} 
               alt="Developer Illustration" 
-              width={500} 
-              height={500} 
+              width="500" 
+              height="500" 
               class="logos"
             />
           </div>

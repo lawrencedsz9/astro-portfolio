@@ -6,7 +6,13 @@ const getUrl = (platform: string, username: string) => {
     case 'github':
       return `https://github.com/${username}`;
     case 'linkedin':
-      return `https://linkedin.com/in/${username}`;
+      if (username.startsWith('http')) {
+        return username;
+      }
+      if (username.startsWith('in/')) {
+        return `https://www.linkedin.com/${username}`;
+      }
+      return `https://www.linkedin.com/in/${username}`;
     case 'twitter':
       return `https://twitter.com/${username}`;
     default:

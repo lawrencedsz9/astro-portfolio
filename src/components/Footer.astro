@@ -17,15 +17,15 @@ import Social from "./social.astro";
       </nav>
 
       <div class="social-links">
-        <Social platform="github" username="lawrencedsz9">
+        <a href="https://github.com/lawrencedsz9" target="_blank" rel="noopener noreferrer" class="social-link">
           <img src="/Github.png" class="social-icon" alt="GitHub" width="20" height="20" />
-        </Social>
-        <Social platform="linkedin" username="lawrence-dsouza">
+        </a>
+        <a href="https://www.linkedin.com/in/lawrencedsouza" target="_blank" rel="noopener noreferrer" class="social-link">
           <img src="/linkedin.png" class="social-icon" alt="LinkedIn" width="20" height="20" />
-        </Social>
-        <Social platform="twitter" username="lawrence_dsouza">
+        </a>
+        <a href="https://twitter.com/lawrence_dsouza" target="_blank" rel="noopener noreferrer" class="social-link">
           <img src="/twitter.png" class="social-icon" alt="Twitter" width="20" height="20" />
-        </Social>
+        </a>
       </div>
     </div>
   </div>
@@ -85,6 +85,15 @@ import Social from "./social.astro";
     display: flex;
     gap: 1.5rem;
     align-items: center;
+  }
+
+  .social-link {
+    display: inline-block;
+    transition: transform 0.3s ease;
+  }
+
+  .social-link:hover {
+    transform: translateY(-2px);
   }
 
   .social-icon {

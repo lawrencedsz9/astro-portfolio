@@ -25,13 +25,13 @@ const title = "Get in Touch";
           </div>
 
           <div class="social-item">
-            <Social platform="LinkedIn" username="lawrencedsouza">
+            <a href="https://www.linkedin.com/in/lawrencedsouza" target="_blank" rel="noopener noreferrer" class="linkedin-link">
               <img src="/linkedin.png" alt="LinkedIn" class="social-icon" />
               <div class="social-text">
                 <h3>LinkedIn</h3>
                 <p>Connect with me</p>
               </div>
-            </Social>
+            </a>
           </div>
 
           <div class="social-item">
@@ -111,7 +111,7 @@ const title = "Get in Touch";
     transform: translateY(-3px);
   }
 
-  .social-item a, .email-link {
+  .social-item a, .email-link, .linkedin-link {
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -123,7 +123,7 @@ const title = "Get in Touch";
     transition: all 0.25s ease;
   }
 
-  .social-item a:hover, .email-link:hover {
+  .social-item a:hover, .email-link:hover, .linkedin-link:hover {
     background: rgba(255, 255, 255, 0.1);
   }
 
@@ -168,7 +168,7 @@ const title = "Get in Touch";
       grid-template-columns: 1fr;
     }
 
-    .social-item a, .email-link {
+    .social-item a, .email-link, .linkedin-link {
       padding: 0.75rem;
     }
 
