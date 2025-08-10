@@ -55,6 +55,8 @@ const { dark = false, title, body, href } = Astro.props as Props;
   .dark {
     background: rgba(255, 255, 255, 0.05);
     color: var(--color-text, #fff);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(4px);
   }
 
   .card-title {
