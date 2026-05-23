@@ -1,6 +1,4 @@
 ---
-import logos from '../images/invent.png';
-
 export interface Props {
   heading?: string;
   text?: string;
@@ -15,361 +13,170 @@ const {
 ---
 
 <section class="showcase">
-  <div class="bg-shapes">
-    <div class="shape shape-1"></div>
-    <div class="shape shape-2"></div>
-    <div class="shape shape-3"></div>
-    <div class="shape shape-4"></div>
-  </div>
-  
   <div class="container">
     <div class="showcase-content">
       <div class="showcase-text">
         <div class="text-content">
-          <span class="greeting">Welcome to my portfolio</span>
-          <h1>{heading}</h1>
-          <p>{text}</p>
+          <span class="greeting">Developer.</span>
+          <h1 class="giant-heading">{heading}</h1>
+          <p class="subtitle">{text}</p>
+          
+          <div class="tags-container">
+            <span class="tag pill"><span class="dot js"></span> Web</span>
+            <span class="tag pill"><span class="dot react"></span> Design</span>
+            <span class="tag pill"><span class="dot astro"></span> Problem Solving</span>
+          </div>
+
+          <!-- right interactive LangGraph-like node animation -->
+          <aside aria-hidden="true">
+            <canvas id="hero-graph" width="600" height="600" role="img" aria-label="Network graph animation"></canvas>
+          </aside>
           {showExtra && (
             <div class="showcase-cta">
-              <a href="/projects" class="btn btn-primary">View My Work</a>
-              <a href="/contact" class="btn btn-outline">Contact Me</a>
+              <a href="#projects" class="btn btn-primary">Projects</a>
+              <a href="/contact" class="btn btn-outline">Contact</a>
             </div>
           )}
         </div>
       </div>
-
-      {showExtra && (
-        <div class="showcase-img">
-          <div class="img-wrapper">
-            <img 
-              src={logos.src} 
-              alt="Developer Illustration" 
-              width="500" 
-              height="500" 
-              class="logos"
-            />
-          </div>
-        </div>
-      )}
     </div>
   </div>
 </section>
 
-<script>
-  // Mouse follower effect for the shapes
-  document.addEventListener('DOMContentLoaded', () => {
-    const shapes = document.querySelectorAll('.shape');
-    const root = document.documentElement;
-
-    document.addEventListener('mousemove', (e) => {
-      const x = e.clientX / window.innerWidth;
-      const y = e.clientY / window.innerHeight;
-      
-      shapes.forEach((shape, index) => {
-        // Different movement factors for each shape
-        const factorX = (index % 2 === 0) ? -15 : 15;
-        const factorY = (index % 3 === 0) ? -10 : 10;
-        
-        (shape as HTMLElement).style.transform = `translate(${x * factorX}px, ${y * factorY}px)`;
-      });
-    });
-  });
-</script>
-
 <style>
   .showcase {
     min-height: 100vh;
-    background: var(--gradient-primary);
-    padding-top: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 80px;
     position: relative;
     overflow: hidden;
-  }
-
-  .bg-shapes {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    overflow: hidden;
-    z-index: 0;
-  }
-
-  .shape {
-    position: absolute;
-    border-radius: 50%;
-    transition: transform 0.3s ease-out;
-  }
-
-  .shape-1 {
-    width: 300px;
-    height: 300px;
-    background: rgba(var(--color-primary-rgb), 0.5);
-    filter: blur(80px);
-    top: 10%;
-    right: -100px;
-  }
-
-  .shape-2 {
-    width: 400px;
-    height: 400px;
-    background: rgba(var(--color-accent), 0.1);
-    filter: blur(90px);
-    bottom: -150px;
-    left: -100px;
-  }
-
-  .shape-3 {
-    width: 200px;
-    height: 200px;
-    background: rgba(var(--color-accent), 0.15);
-    filter: blur(40px);
-    top: 30%;
-    left: 10%;
-  }
-
-  .shape-4 {
-    width: 150px;
-    height: 150px;
-    background: rgba(255, 255, 255, 0.05);
-    filter: blur(60px);
-    top: 40%;
-    right: 20%;
-  }
-
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 2rem;
-    position: relative;
-    z-index: 1;
   }
 
   .showcase-content {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    gap: 4rem;
-    min-height: calc(100vh - 100px);
-  }
-
-  .showcase-text {
-    flex: 1;
-    max-width: 600px;
-    animation: fadeInUp 1s ease-out;
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
   }
 
   .text-content {
-    position: relative;
-    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
   }
 
   .greeting {
-    display: inline-block;
-    font-size: 1rem;
-    font-weight: 500;
+    font-family: monospace;
+    color: var(--color-text-muted);
+    font-size: 1.1rem;
     text-transform: uppercase;
     letter-spacing: 2px;
-    color: var(--color-accent);
-    margin-bottom: 1rem;
-    position: relative;
-    padding-left: 30px;
   }
 
-  .greeting:before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 50%;
-    width: 20px;
-    height: 2px;
-    background: var(--color-accent);
-    transform: translateY(-50%);
-  }
-
-  .showcase h1 {
-    font-size: 4rem;
-    font-weight: 700;
+  .giant-heading {
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    font-weight: 800;
     line-height: 1.1;
-    margin-bottom: 1.5rem;
-    background: linear-gradient(to right, var(--color-text), var(--color-accent));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-size: 200% auto;
-    animation: gradientText 5s ease infinite;
+    letter-spacing: -0.03em;
+    margin: 0;
+    color: var(--color-text);
   }
 
-  .showcase p {
-    font-size: 1.25rem;
-    line-height: 1.6;
-    margin-bottom: 2rem;
+  .subtitle {
+    font-size: clamp(1.1rem, 2vw, 1.5rem);
     color: var(--color-text-muted);
+    max-width: 600px;
+    margin: 0 auto;
+    font-weight: 300;
   }
+
+  .tags-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1.25rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 100px;
+    color: var(--color-text);
+    font-size: 0.9rem;
+    font-weight: 500;
+    backdrop-filter: blur(4px);
+  }
+
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .dot.js { background: #f7df1e; }
+  .dot.react { background: #61dafb; }
+  .dot.astro { background: #ff5d01; }
 
   .showcase-cta {
     display: flex;
     gap: 1rem;
-    margin-bottom: 3rem;
+    margin-top: 2rem;
   }
 
-  .btn {
-    display: inline-block;
-    padding: 1rem 2rem;
-    border-radius: 50px;
-    font-weight: 500;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    font-size: 1rem;
-    position: relative;
-    overflow: hidden;
-  }
+  .showcase aside { margin-top: 18px; }
+  #hero-graph { display:block; width: min(420px, 48vw); height: auto; border-radius:14px; background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02)); box-shadow: 0 6px 30px rgba(0,0,0,0.6); }
 
-  .btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.1);
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-  }
-
-  .btn:hover::before {
-    transform: translateX(0);
-  }
-
-  .btn-primary {
-    background: var(--color-accent);
-    color: var(--color-text);
-    border: none;
-  }
-
-  .btn-outline {
-    background: transparent;
-    border: 2px solid var(--color-accent);
-    color: var(--color-accent);
-  }
-
-  .btn-outline:hover {
-    background: var(--color-accent);
-    color: var(--color-text);
-  }
-
-  .showcase-img {
-    flex: 1;
-    position: relative;
-    animation: fadeInRight 1s ease-out;
-  }
-
-  .img-wrapper {
-    background: rgba(255, 255, 255, 0.05);
-    padding: 2rem;
-    border-radius: 20px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(8px);
-    transition: all 0.3s ease;
-  }
-
-  .img-wrapper:hover {
-    transform: translateY(-10px) rotate(2deg);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-  }
-
-  .showcase-img img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 15px;
-    filter: grayscale(0.3) contrast(1.1);
-    transition: all 0.5s ease;
-  }
-
-  .showcase-img:hover img {
-    filter: grayscale(0) contrast(1);
-  }
-
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(40px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  @keyframes fadeInRight {
-    from {
-      opacity: 0;
-      transform: translateX(40px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-
-  @keyframes gradientText {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
-  }
-
-  @media (max-width: 968px) {
-    .showcase-content {
-      flex-direction: column;
-      text-align: center;
-      gap: 2rem;
-      min-height: auto;
-      padding: 4rem 0;
-    }
-
-    .showcase h1 {
+  @media (max-width: 768px) {
+    .giant-heading {
       font-size: 3rem;
-    }
-
-    .greeting {
-      padding-left: 0;
-    }
-
-    .greeting:before {
-      display: none;
-    }
-
-    .showcase-cta {
-      justify-content: center;
-    }
-
-    .showcase-img {
-      max-width: 80%;
-      margin: 0 auto;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .showcase h1 {
-      font-size: 2.5rem;
-    }
-
-    .showcase p {
-      font-size: 1.1rem;
-    }
-
-    .showcase-cta {
-      flex-direction: column;
-    }
-
-    .btn {
-      width: 100%;
-      text-align: center;
     }
   }
 </style>
+
+<script>
+  // LangGraph-like node animation (canvas)
+  (function(){
+    const run = () => {
+      const canvas = document.getElementById('hero-graph');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let DPR = window.devicePixelRatio || 1;
+
+      function resize() {
+        const rect = canvas.getBoundingClientRect();
+        const s = Math.max(200, rect.width);
+        canvas.width = Math.floor(s * DPR);
+        canvas.height = Math.floor(s * DPR);
+        canvas.style.height = (s) + 'px';
+        ctx.setTransform(DPR,0,0,DPR,0,0);
+      }
+
+      function rand(min,max){return Math.random()*(max-min)+min}
+      const NODE_COUNT = 28; const nodes = [];
+      function init(){ nodes.length=0; const size = canvas.getBoundingClientRect().width; for(let i=0;i<NODE_COUNT;i++){ nodes.push({ x:rand(size*0.12,size*0.88), y:rand(size*0.12,size*0.88), vx:rand(-0.25,0.25), vy:rand(-0.25,0.25), r:rand(2.5,6), active:0 }); } }
+
+      function draw(){ const size = canvas.width/DPR; ctx.clearRect(0,0,size,size); const maxDist = size*0.28; for(let i=0;i<nodes.length;i++){ for(let j=i+1;j<nodes.length;j++){ const a=nodes[i], b=nodes[j]; const dx=a.x-b.x, dy=a.y-b.y, d=Math.hypot(dx,dy); if(d<maxDist){ const alpha=1-d/maxDist; ctx.strokeStyle = `rgba(160,160,180,${0.08*alpha+0.02})`; ctx.lineWidth = 1*alpha; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); } } } nodes.forEach(n=>{ ctx.beginPath(); const glow=8*(n.active||0.2); const g=ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r+glow); g.addColorStop(0,`rgba(255,255,255,${0.9*(n.active||0.6)})`); g.addColorStop(0.6,`rgba(200,200,220,${0.25*(n.active||0.6)})`); g.addColorStop(1,'rgba(0,0,0,0)'); ctx.fillStyle=g; ctx.arc(n.x,n.y,n.r+(n.active?2:0),0,Math.PI*2); ctx.fill(); }); }
+
+      let last = performance.now(), raf = null;
+      function tick(t){ const dt = Math.min(40,t-last)/16.666; last = t; const size = canvas.width/DPR; for(const n of nodes){ n.x += n.vx*dt*12; n.y += n.vy*dt*12; if(n.x < size*0.08 || n.x > size*0.92) n.vx *= -1; if(n.y < size*0.08 || n.y > size*0.92) n.vy *= -1; n.vx += rand(-0.02,0.02)*dt; n.vy += rand(-0.02,0.02)*dt; n.active = Math.max(0,(n.active||0)-0.01*dt); } draw(); raf = requestAnimationFrame(tick); }
+
+      function onPointer(e){ const rect = canvas.getBoundingClientRect(); const x = e.clientX - rect.left; const y = e.clientY - rect.top; let nearest=null, nd=9999; for(const n of nodes){ const d=Math.hypot(n.x-x,n.y-y); if(d<nd){ nd=d; nearest=n; } } if(nearest && nd<80){ nearest.active = 1.2; for(const k of nodes){ const d2=Math.hypot(k.x-nearest.x,k.y-nearest.y); if(d2<140){ k.vx += (k.x-nearest.x)*0.0008; k.vy += (k.y-nearest.y)*0.0008; } } } }
+
+      function start(){ DPR = window.devicePixelRatio||1; resize(); init(); if(raf) cancelAnimationFrame(raf); last = performance.now(); raf = requestAnimationFrame(tick); }
+      window.addEventListener('resize',()=>{ DPR = window.devicePixelRatio||1; resize(); });
+      canvas.addEventListener('pointermove', onPointer); canvas.addEventListener('pointerdown', onPointer);
+      start();
+    };
+    if (document.readyState === 'complete' || document.readyState === 'interactive') run(); else document.addEventListener('DOMContentLoaded', run);
+  })();
+</script>

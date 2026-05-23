@@ -1,162 +1,342 @@
 ---
-import { projects } from "../data.js";
-import Card from "./Card.astro";
+import { projects } from '../data.js';
+import Card from './Card.astro';
+
+// Chunk projects into arrays of 4 (2x2 grid pages)
+const chunkSize = 4;
+const projectChunks = [];
+for (let i = 0; i < projects.length; i += chunkSize) {
+  projectChunks.push(projects.slice(i, i + chunkSize));
+}
 ---
-<div class="projects-container">
-    <h1>My Projects</h1>
-    <div class="projects-grid">
-        {
-            projects.map((project) => (
-                <Card dark={true}>
-                    <div class="project-content">
-                        <h2 class="project-title">{project.name}</h2>
-                        <p class="project-description">{project.description}</p>
-                        <div class="project-stack">
-                            {project.stack.map((tech) => (
-                                <span class="tech-tag">{tech}</span>
-                            ))}
-                        </div>
-                        <div class="project-links">
-                            {project.link && (
-                                <a href={project.link} target="_blank" rel="noopener noreferrer" class="project-link github">
-                                    <span>View Source</span>
-                                    <span class="icon">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-                                    </span>
-                                </a>
-                            )}
-                            {project.demo && project.demo !== "#" && (
-                                <a href={project.demo} target="_blank" rel="noopener noreferrer" class="project-link demo">
-                                    <span>Live Demo</span>
-                                    <span class="icon">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-                                    </span>
-                                </a>
-                            )}
-                        </div>
-                    </div>
-                </Card>
-            ))
-        }
+
+<section class="projects-section" id="projects">
+  <div class="projects-container">
+    <div class="section-header">
+      <div>
+        <p class="eyebrow">Selected Work</p>
+        <h2>Projects</h2>
+      </div>
     </div>
-</div>
+
+    <!-- Carousel Container -->
+    <div class="carousel-container">
+      <div class="carousel-track">
+        {projectChunks.map((chunk, pageIndex) => (
+          <div class="carousel-page">
+            {chunk.map((project, index) => {
+              const isFeatured = pageIndex === 0 && index < 2;
+              return (
+                <Card dark={true} class={isFeatured ? "featured-card" : "project-card"}>
+                  {isFeatured && index === 1 && <div class="icon-badge" aria-hidden="true">+</div>}
+                  <p class="card-label">{isFeatured ? 'FEATURED' : 'PROJECT'}</p>
+                  <h3 class="card-title">{project.name}</h3>
+                  <p class="card-description">{project.description}</p>
+                  
+                  <div class="tech-stack">
+                    {project.stack.map((tech) => (
+                      <span class="tech-badge">{tech}</span>
+                    ))}
+                  </div>
+
+                  <a href={project.link} target="_blank" rel="noopener noreferrer" class="view-link">
+                    {isFeatured ? 'See how it works ->' : 'View Project ->'}
+                  </a>
+                </Card>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+
+      <!-- Carousel Dots -->
+      <div class="carousel-dots" aria-hidden="true">
+        {projectChunks.map((_, i) => (
+          <span class={`dot ${i === 0 ? 'active' : ''}`} data-slide={i}></span>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Carousel functionality
+  const track = document.querySelector('.carousel-track');
+  const dots = document.querySelectorAll('.carousel-dots .dot');
+
+  if (track && dots.length > 0) {
+    // Update dots on scroll (touchpad swipe natively triggers this)
+    track.addEventListener('scroll', () => {
+      const scrollRatio = track.scrollLeft / track.clientWidth;
+      const currentSlide = Math.round(scrollRatio);
+
+      dots.forEach((dot, index) => {
+        if (index === currentSlide) {
+          dot.classList.add('active');
+        } else {
+          dot.classList.remove('active');
+        }
+      });
+    });
+
+    // Make dots clickable
+    dots.forEach((dot, index) => {
+      dot.addEventListener('click', () => {
+        track.scrollTo({
+          left: index * track.clientWidth,
+          behavior: 'smooth'
+        });
+      });
+    });
+  }
+</script>
 
 <style>
+  .projects-section {
+    width: 100%;
+    padding: 5rem 0;
+    background: var(--color-primary);
+  }
+
+  .projects-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 3rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 1.5rem;
+  }
+
+  .eyebrow {
+    margin: 0 0 0.5rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .section-header h2 {
+    margin: 0;
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--color-text);
+  }
+
+  .year-range {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+    font-style: italic;
+  }
+
+  /* Carousel */
+  .carousel-container {
+    width: 100%;
+  }
+
+  .carousel-track {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
+
+  .carousel-track::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+  }
+
+  .carousel-page {
+    min-width: 100%;
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  .featured-card,
+  .project-card {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 360px;
+  }
+
+  .icon-badge {
+    width: 2rem;
+    height: 2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    color: var(--color-text-muted);
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .card-label {
+    margin: 0 0 1rem;
+    color: var(--color-text);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+
+  .card-title {
+    margin: 0 0 1.25rem;
+    color: var(--color-text);
+    font-size: clamp(1.45rem, 3vw, 2rem);
+    line-height: 1.12;
+  }
+
+  .card-description {
+    margin: 0 0 1.5rem;
+    color: var(--color-accent-light);
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  .tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: auto;
+    padding-top: 1rem;
+  }
+
+  .tech-badge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2rem;
+    padding: 0.35rem 0.7rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--color-text-muted);
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+
+  .view-link {
+    display: inline-flex;
+    width: fit-content;
+    margin-top: 1.25rem;
+    color: var(--color-text);
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
+
+  /* Carousel Dots */
+  .carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.8rem;
+    margin-top: 2.5rem;
+  }
+
+  .dot {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .dot.active {
+    background: var(--color-text);
+    width: 1.8rem;
+    border-radius: 999px;
+  }
+
+  .dot:hover {
+    background: rgba(255, 255, 255, 0.6);
+  }
+
+  @media (max-width: 768px) {
+    .projects-section {
+      padding: 4rem 0;
+    }
+
     .projects-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 4rem 2rem;
+      padding: 0 1rem;
     }
 
-    h1 {
-        font-size: 2.5rem;
-        margin-bottom: 2rem;
-        text-align: center;
-        background: linear-gradient(to right, var(--color-text), var(--color-accent));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+    .section-header {
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
     }
 
-    .projects-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
+    .section-header h2 {
+      font-size: 2rem;
+      text-align: left;
     }
 
-    .project-content {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
+    .carousel-track {
+      display: block;
+      overflow: visible;
+      scroll-snap-type: none;
     }
 
-    .project-title {
-        font-size: 1.5rem;
-        margin-bottom: 1rem;
-        color: var(--color-text);
+    .carousel-page {
+      min-width: 0;
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+      gap: 1rem;
     }
 
-    .project-description {
-        color: var(--color-text-muted);
-        margin-bottom: 1.5rem;
-        line-height: 1.6;
-        flex: 1;
+    .carousel-page + .carousel-page {
+      margin-top: 1rem;
     }
 
-    .project-stack {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-        margin-bottom: 1.5rem;
+    .featured-card,
+    .project-card {
+      min-height: auto;
+      padding: 1.25rem;
     }
 
-    .tech-tag {
-        background: rgba(255, 255, 255, 0.1);
-        padding: 0.25rem 0.75rem;
-        border-radius: 1rem;
-        font-size: 0.875rem;
-        color: var(--color-accent);
+    .card-title {
+      font-size: 1.65rem;
     }
 
-    .project-links {
-        display: flex;
-        gap: 1rem;
-        margin-top: auto;
+    .card-description {
+      font-size: 0.98rem;
+      line-height: 1.65;
     }
 
-    .project-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.5rem 1rem;
-        border-radius: 0.5rem;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        font-weight: 500;
+    .carousel-dots {
+      display: none;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .projects-container {
+      padding: 0 0.875rem;
     }
 
-    .project-link.github {
-        background: var(--color-accent);
-        color: var(--color-text);
+    .featured-card,
+    .project-card {
+      padding: 1rem;
     }
 
-    .project-link.demo {
-        background: transparent;
-        border: 1px solid var(--color-accent);
-        color: var(--color-accent);
+    .card-title {
+      font-size: 1.45rem;
     }
 
-    .project-link:hover {
-        opacity: 0.9;
-        transform: translateY(-2px);
+    .card-description {
+      font-size: 0.94rem;
     }
-
-    .icon {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .icon svg {
-        width: 1.25rem;
-        height: 1.25rem;
-    }
-
-    @media (max-width: 768px) {
-        .projects-container {
-            padding: 2rem 1rem;
-        }
-
-        h1 {
-            font-size: 2rem;
-        }
-
-        .project-links {
-            flex-direction: column;
-        }
-
-        .project-link {
-            width: 100%;
-            justify-content: center;
-        }
-    }
+  }
 </style>
+
