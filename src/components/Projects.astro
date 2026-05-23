@@ -1,162 +1,326 @@
 ---
-import { projects } from "../data.js";
-import Card from "./Card.astro";
+import { projects } from '../data.js';
+import Card from './Card.astro';
+
+const featuredProject = projects[0];
+const otherProjects = projects.slice(1);
 ---
-<div class="projects-container">
-    <h1>My Projects</h1>
-    <div class="projects-grid">
-        {
-            projects.map((project) => (
-                <Card dark={true}>
-                    <div class="project-content">
-                        <h2 class="project-title">{project.name}</h2>
-                        <p class="project-description">{project.description}</p>
-                        <div class="project-stack">
-                            {project.stack.map((tech) => (
-                                <span class="tech-tag">{tech}</span>
-                            ))}
-                        </div>
-                        <div class="project-links">
-                            {project.link && (
-                                <a href={project.link} target="_blank" rel="noopener noreferrer" class="project-link github">
-                                    <span>View Source</span>
-                                    <span class="icon">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-                                    </span>
-                                </a>
-                            )}
-                            {project.demo && project.demo !== "#" && (
-                                <a href={project.demo} target="_blank" rel="noopener noreferrer" class="project-link demo">
-                                    <span>Live Demo</span>
-                                    <span class="icon">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-                                    </span>
-                                </a>
-                            )}
-                        </div>
-                    </div>
-                </Card>
-            ))
-        }
+
+<section class="projects-section" id="projects">
+  <div class="projects-container">
+    <div class="section-header">
+      <div>
+        <p class="eyebrow">Selected Work</p>
+        <h2>Projects</h2>
+      </div>
+      <p class="year-range">2022 - Present</p>
     </div>
-</div>
+
+    <!-- Featured Project Grid -->
+    <div class="projects-grid">
+      <!-- Featured Card (Left) -->
+      <Card dark={true} class="featured-card">
+        <p class="card-label">FEATURED</p>
+        <h3 class="card-title">{featuredProject.name}</h3>
+        <p class="card-description">{featuredProject.description}</p>
+        
+        <div class="tech-stack">
+          {featuredProject.stack.map((tech) => (
+            <span class="tech-badge">{tech}</span>
+          ))}
+        </div>
+
+        <a href={featuredProject.link} target="_blank" rel="noopener noreferrer" class="view-link">
+          See how it works →
+        </a>
+      </Card>
+
+      <!-- Metrics Card (Right) -->
+      <Card dark={true} class="metrics-card">
+        <div class="icon-badge">⚙</div>
+        <p class="card-label">FEATURED</p>
+        <h3 class="card-title">{otherProjects[0]?.name}</h3>
+        <p class="card-description">{otherProjects[0]?.description}</p>
+        
+
+        <div class="tech-stack">
+          {otherProjects[0]?.stack.map((tech) => (
+            <span class="tech-badge">{tech}</span>
+          ))}
+        </div>
+      </Card>
+    </div>
+
+    <!-- Secondary Projects Grid -->
+    <div class="secondary-grid">
+      {otherProjects.slice(1, 3).map((project) => (
+        <Card dark={true} class="project-card">
+          <p class="card-label">{project === otherProjects[1] ? 'project' : 'PROJECT'}</p>
+          <h3 class="card-title">{project.name}</h3>
+          <p class="card-description">{project.description}</p>
+          
+          <div class="tech-stack">
+            {project.stack.map((tech) => (
+              <span class="tech-badge">{tech}</span>
+            ))}
+          </div>
+        </Card>
+      ))}
+
+      <!--Project-->
+      <Card dark={true} class="consulting-card">
+        <p class="card-label">Featured</p>
+        <h3 class="card-title-italic">Portfolio Website</h3>
+        <p class="card-description">I help startups turn AI prototypes into production systems — reducing infra costs, scaling to real users, and building LLM pipelines that don't break at 3am.</p>
+        <div style="margin-top: auto;">
+          <a href={otherProjects[2]?.link} target="_blank" rel="noopener noreferrer" class="btn-dark">
+            Get in Touch
+          </a>
+        </div>
+        <div class="carousel-dots" aria-hidden="true">
+          <span></span>
+          <span class="active"></span>
+          <span></span>
+        </div>
+      </Card>
+    </div>
+  </div>
+</section>
 
 <style>
-    .projects-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 4rem 2rem;
-    }
+  .projects-section {
+    width: 100%;
+    padding: 4rem 0;
+    background: var(--color-primary);
+  }
 
-    h1 {
-        font-size: 2.5rem;
-        margin-bottom: 2rem;
-        text-align: center;
-        background: linear-gradient(to right, var(--color-text), var(--color-accent));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
+  .projects-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
 
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 3rem;
+  }
+
+  .eyebrow {
+    margin: 0 0 0.5rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .section-header h2 {
+    margin: 0;
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--color-text);
+  }
+
+  .year-range {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+    font-style: italic;
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .featured-card,
+  .metrics-card {
+    padding: 2rem;
+  }
+
+  .card-label {
+    margin: 0 0 0.75rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  .card-title {
+    margin: 0 0 1rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .card-title-italic {
+    margin: 0 0 1rem;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--color-text);
+    font-style: italic;
+  }
+
+  .card-description {
+    margin: 0 0 1.5rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+  }
+
+  .tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .tech-badge {
+    display: inline-block;
+    padding: 0.35rem 0.85rem;
+    font-size: 0.8rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--color-text);
+  }
+
+  .view-link {
+    display: inline-block;
+    color: var(--color-text);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    margin-top: auto;
+  }
+
+  .view-link:hover {
+    color: var(--color-accent);
+  }
+
+  .icon-badge {
+    width: 2.5rem;
+    height: 2.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--color-text);
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .metrics-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .metric-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 0.8rem 1rem;
+    border-radius: 0.75rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .metric-value {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .metric-label {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  .secondary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  .project-card {
+    padding: 1.5rem;
+  }
+
+  .consulting-card {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .btn-dark {
+    display: inline-flex;
+    padding: 0.75rem 1.5rem;
+    border-radius: 999px;
+    background: var(--color-text);
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    margin-bottom: 2rem;
+  }
+
+  .btn-dark:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+  }
+
+  .carousel-dots {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: auto;
+  }
+
+  .carousel-dots span {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+  }
+
+  .carousel-dots span.active {
+    background: var(--color-text);
+    width: 1.8rem;
+  }
+
+  @media (max-width: 768px) {
     .projects-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
+      grid-template-columns: 1fr;
     }
 
-    .project-content {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
+    .secondary-grid {
+      grid-template-columns: 1fr;
     }
 
-    .project-title {
-        font-size: 1.5rem;
-        margin-bottom: 1rem;
-        color: var(--color-text);
+    .section-header {
+      flex-direction: column;
+      gap: 1rem;
     }
 
-    .project-description {
-        color: var(--color-text-muted);
-        margin-bottom: 1.5rem;
-        line-height: 1.6;
-        flex: 1;
+    .section-header h2 {
+      font-size: 2rem;
     }
 
-    .project-stack {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-        margin-bottom: 1.5rem;
+    .featured-card,
+    .metrics-card,
+    .project-card {
+      padding: 1.5rem;
     }
-
-    .tech-tag {
-        background: rgba(255, 255, 255, 0.1);
-        padding: 0.25rem 0.75rem;
-        border-radius: 1rem;
-        font-size: 0.875rem;
-        color: var(--color-accent);
-    }
-
-    .project-links {
-        display: flex;
-        gap: 1rem;
-        margin-top: auto;
-    }
-
-    .project-link {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.5rem 1rem;
-        border-radius: 0.5rem;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        font-weight: 500;
-    }
-
-    .project-link.github {
-        background: var(--color-accent);
-        color: var(--color-text);
-    }
-
-    .project-link.demo {
-        background: transparent;
-        border: 1px solid var(--color-accent);
-        color: var(--color-accent);
-    }
-
-    .project-link:hover {
-        opacity: 0.9;
-        transform: translateY(-2px);
-    }
-
-    .icon {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .icon svg {
-        width: 1.25rem;
-        height: 1.25rem;
-    }
-
-    @media (max-width: 768px) {
-        .projects-container {
-            padding: 2rem 1rem;
-        }
-
-        h1 {
-            font-size: 2rem;
-        }
-
-        .project-links {
-            flex-direction: column;
-        }
-
-        .project-link {
-            width: 100%;
-            justify-content: center;
-        }
-    }
+  }
 </style>

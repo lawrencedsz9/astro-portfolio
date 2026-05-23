@@ -1,0 +1,65 @@
+---
+export interface Props {
+  title: string;
+  description: string;
+  stats?: Array<{ label: string; value: string }>;
+  tags?: string[];
+  url?: string;
+}
+
+const {
+  title = 'Face Recognition Image Retrieval System',
+  description = 'Computer vision pipeline for detecting, embedding, and matching faces across large image datasets with optimized retrieval and caching support.',
+  stats = [
+    { label: 'face embedding size', value: '128D' },
+    { label: 'matching engine', value: 'Cosine Similarity' }
+  ],
+  tags = ['Python', 'Dlib', 'OpenCV', 'NumPy', 'scikit-learn'],
+  url = '/projects'
+} = Astro.props as Props;
+---
+
+<div class="card featured">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;">
+    
+    <div style="flex:1;min-width:220px;">
+      <div style="font-size:0.75rem;color:var(--color-text-muted);font-weight:700;letter-spacing:1px;margin-bottom:10px;">
+        FEATURED PROJECT
+      </div>
+
+      <h2 style="margin:8px 0 8px 0;">{title}</h2>
+
+      <p style="color:var(--color-text-muted);margin:0 0 12px 0;">
+        {description}
+      </p>
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        {tags.map((t) => <div class="pill">{t}</div>)}
+      </div>
+
+      <div style="margin-top:14px;">
+        <a class="btn btn-dark" href={url}>
+          Explore project ↗
+        </a>
+      </div>
+    </div>
+
+    <div style="min-width:160px;display:flex;flex-direction:column;gap:12px;align-items:flex-end;">
+      {stats.map((s) => (
+        <div
+          class="card"
+          style="padding:12px;border-radius:12px;background:rgba(255,255,255,0.03);min-width:120px;text-align:center;"
+        >
+          <div style="font-weight:800;font-size:1.25rem;">
+            {s.value}
+          </div>
+
+          <div style="color:var(--color-text-muted);font-size:0.85rem;">
+            {s.label}
+          </div>
+        </div>
+      ))}
+    </div>
+
+  </div>
+</div>

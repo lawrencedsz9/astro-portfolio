@@ -1,32 +1,36 @@
 :root {
-    /* Modern deep blue to purple palette with coral accent */
-    --color-primary: #161b33;
-    --color-primary-rgb: 22, 27, 51;
-    --color-secondary: #0d1b2a;
-    --color-tertiary: #2d3250;
-    --color-accent: #f45b69;
-    --color-accent-rgb: 244, 91, 105;
-    --color-accent-light: #ff7c89;
-    --color-text: #ffffff;
-    --color-text-muted: rgba(255, 255, 255, 0.85);
-    --color-bg-light: rgba(255, 255, 255, 0.05);
-    --color-bg-lighter: rgba(255, 255, 255, 0.08);
+    /* Minimalist Dark Palette */
+    --color-primary: #09090b; /* Deep almost-black */
+    --color-primary-rgb: 9, 9, 11;
+    --color-secondary: #18181b; 
+    --color-tertiary: #27272a;
+    --color-accent: #ffffff; /* White emphasis */
+    --color-accent-rgb: 255, 255, 255;
+    --color-accent-light: #e4e4e7;
+    --color-text: #fafafa;
+    --color-text-muted: #a1a1aa;
+    --color-bg-light: #18181b;
+    --color-bg-lighter: #27272a;
+    
+    /* Grid Background Pattern */
+    --grid-pattern: linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
     
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
     --gradient-accent: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-light) 100%);
-    --gradient-text: linear-gradient(90deg, var(--color-text) 0%, var(--color-accent) 100%);
+    --gradient-text: linear-gradient(90deg, #ffffff 0%, #a1a1aa 100%);
     
     /* Shadows */
-    --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.1);
-    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.15);
-    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.2);
-    --shadow-accent: 0 5px 15px rgba(244, 91, 105, 0.3);
+    --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.4);
+    --shadow-accent: 0 5px 15px rgba(255, 255, 255, 0.1);
     
-    /* Border radius */
-    --border-radius-sm: 0.25rem;
-    --border-radius-md: 0.5rem;
-    --border-radius-lg: 1rem;
+    /* Border radius - Highly rounded for pills */
+    --border-radius-sm: 0.5rem;
+    --border-radius-md: 1rem;
+    --border-radius-lg: 100px; /* Capsule style */
     
     /* Spacing */
     --space-xs: 0.25rem;
@@ -50,10 +54,13 @@
   }
   
   body {
-    font-family: 'Roboto', sans-serif;
-    font-size: 16px;
-    line-height: 1.5;
-    background: var(--color-primary);
+    font-family: 'Inter', 'Roboto', ui-sans-serif, system-ui, -apple-system, sans-serif;
+    font-size: 18px;
+    line-height: 1.6;
+    background-color: var(--color-primary);
+    background-image: var(--grid-pattern);
+    background-size: 40px 40px;
+    background-position: center top;
     color: var(--color-text);
     overflow-x: hidden;
     min-height: 100vh;
@@ -113,38 +120,42 @@
   }
   
   .btn {
-    display: inline-block;
-    padding: var(--space-sm) var(--space-md);
-    border-radius: var(--border-radius-md);
-    background: var(--color-tertiary);
-    color: var(--color-text);
-    text-transform: uppercase;
-    font-size: 0.9rem;
-    font-weight: 500;
-    letter-spacing: 1px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius-lg);
+    background: var(--color-accent);
+    color: var(--color-primary);
+    text-transform: capitalize;
+    font-size: 1rem;
+    font-weight: 600;
     transition: var(--transition-normal);
-    border: none;
+    border: 1px solid var(--color-accent);
     cursor: pointer;
   }
 
   .btn:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-md);
+    background: transparent;
+    color: var(--color-accent);
+    transform: translateY(-2px);
   }
 
   .btn-primary {
     background: var(--color-accent);
+    color: var(--color-primary);
   }
 
   .btn-outline {
-    background: transparent;
-    border: 2px solid var(--color-accent);
-    color: var(--color-accent);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--color-text);
   }
 
   .btn-outline:hover {
     background: var(--color-accent);
-    color: var(--color-text);
+    color: var(--color-primary);
+    border-color: var(--color-accent);
   }
 
   .text-gradient {
