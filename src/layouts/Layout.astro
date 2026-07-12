@@ -1,7 +1,6 @@
 ---
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import SplineBackground from '../components/SplineBackground.astro';
 import '../styles/global.css';
 
 export interface Props {
@@ -23,7 +22,6 @@ const { title = 'Lawrence Dsouza' } = Astro.props as Props;
     <title>{title}</title>
   </head>
   <body>
-    <SplineBackground />
     <Header />
     <slot />
     <Footer />
