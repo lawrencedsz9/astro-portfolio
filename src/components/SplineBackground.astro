@@ -15,8 +15,6 @@ const { scene = '/scene.splinecode' } = Astro.props as Props;
 </div>
 
 <script>
-  import { Application } from '@splinetool/runtime';
-
   const root = document.querySelector('[data-spline-background]');
 
   if (root instanceof HTMLElement) {
@@ -27,13 +25,22 @@ const { scene = '/scene.splinecode' } = Astro.props as Props;
     const mobileQuery = window.matchMedia('(max-width: 760px)');
 
     if (canvas instanceof HTMLCanvasElement && stage instanceof HTMLElement) {
-      const app = new Application(canvas);
+      const loadSpline = async () => {
+        try {
+          const { Application } = await import('@splinetool/runtime');
+          const app = new Application(canvas);
+          await app.load(scene);
+          root.classList.add('is-ready');
+        } catch {
+          root.classList.add('has-error');
+        }
+      };
 
-      app.load(scene).then(() => {
-        root.classList.add('is-ready');
-      }).catch(() => {
-        root.classList.add('has-error');
-      });
+      if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(loadSpline, { timeout: 1600 });
+      } else {
+        window.setTimeout(loadSpline, 900);
+      }
 
       const state = {
         pointerX: 0,

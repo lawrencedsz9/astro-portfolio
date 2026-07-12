@@ -2,15 +2,48 @@
 import { projects } from '../data.js';
 import Card from './Card.astro';
 
-// Chunk projects into arrays of 4 (2x2 grid pages)
 const chunkSize = 4;
 const projectChunks = [];
+
 for (let i = 0; i < projects.length; i += chunkSize) {
   projectChunks.push(projects.slice(i, i + chunkSize));
 }
+
+const projectMeta = [
+  {
+    category: 'Voice AI',
+    highlight: 'Realtime assistant flow with wake word, tools, and streamed audio.',
+    tone: 'cool'
+  },
+  {
+    category: 'Computer Vision',
+    highlight: 'Motion, face detection, captures, recordings, and local visitor data.',
+    tone: 'mint'
+  },
+  {
+    category: 'Mobile App',
+    highlight: 'Club workflows for members, events, auth, and Firestore-backed data.',
+    tone: 'warm'
+  },
+  {
+    category: 'Portfolio',
+    highlight: 'A fast Astro build focused on responsive layout and performance.',
+    tone: 'cool'
+  },
+  {
+    category: 'Finance Tool',
+    highlight: 'Student-focused budgeting flow for tracking money with less friction.',
+    tone: 'mint'
+  },
+  {
+    category: 'FOSS Site',
+    highlight: 'A responsive single-page build for presenting open source software.',
+    tone: 'warm'
+  }
+];
 ---
 
-<section class="projects-section" id="projects">
+<section class="projects-section" id="projects" data-projects-section>
   <div class="projects-container">
     <div class="section-header">
       <div>
@@ -19,29 +52,76 @@ for (let i = 0; i < projects.length; i += chunkSize) {
       </div>
     </div>
 
-    <!-- Carousel Container -->
     <div class="carousel-container">
       <div class="carousel-track">
         {projectChunks.map((chunk, pageIndex) => (
           <div class="carousel-page">
             {chunk.map((project, index) => {
-              const isFeatured = pageIndex === 0 && index < 2;
+              const projectIndex = pageIndex * chunkSize + index;
+              const projectNumber = String(projectIndex + 1).padStart(2, '0');
+              const isFeatured = projectIndex < 2;
+              const meta = projectMeta[projectIndex % projectMeta.length];
+              const detailsId = `project-details-${projectIndex}`;
+              const isActive = projectIndex === 0;
+
               return (
-                <Card dark={true} class={isFeatured ? "featured-card" : "project-card"}>
-                  {isFeatured && index === 1 && <div class="icon-badge" aria-hidden="true">+</div>}
-                  <p class="card-label">{isFeatured ? 'FEATURED' : 'PROJECT'}</p>
-                  <h3 class="card-title">{project.name}</h3>
-                  <p class="card-description">{project.description}</p>
-                  
-                  <div class="tech-stack">
-                    {project.stack.map((tech) => (
-                      <span class="tech-badge">{tech}</span>
-                    ))}
+                <Card
+                  dark={true}
+                  data-project-card="true"
+                  data-project-index={projectIndex}
+                  class={`project-shell ${isFeatured ? 'featured-card' : 'project-card'} tone-${meta.tone} ${isActive ? 'is-active' : ''}`}
+                  style={`--project-delay: ${projectIndex * 70}ms;`}
+                >
+                  <div class="project-card-topline">
+                    <div>
+                      <p class="card-label">{isFeatured ? 'Featured' : 'Project'}</p>
+                      <p class="card-category">{meta.category}</p>
+                    </div>
+
+                    <button
+                      class="card-activator"
+                      type="button"
+                      aria-label={`Toggle details for ${project.name}`}
+                      aria-controls={detailsId}
+                      aria-expanded={isActive ? 'true' : 'false'}
+                      data-card-activator
+                    >
+                      <span class="activator-icon" aria-hidden="true"></span>
+                    </button>
                   </div>
 
-                  <a href={project.link} target="_blank" rel="noopener noreferrer" class="view-link">
-                    {isFeatured ? 'See how it works ->' : 'View Project ->'}
-                  </a>
+                  <div class="project-card-main">
+                    <span class="project-number" aria-hidden="true">{projectNumber}</span>
+                    <h3 class="card-title">{project.name}</h3>
+                    <p class="card-description">{project.description}</p>
+                  </div>
+
+                  <div class="project-card-footer">
+                    <div class="project-preview" aria-hidden="true">
+                      <div class="preview-track">
+                        <span style="--bar-size: 62%;"></span>
+                        <span style="--bar-size: 88%;"></span>
+                        <span style="--bar-size: 48%;"></span>
+                        <span style="--bar-size: 74%;"></span>
+                      </div>
+                      <span class="preview-stack">{project.stack[0] ?? meta.category}</span>
+                    </div>
+
+                    <div class="project-details" id={detailsId} data-project-details>
+                      <p class="project-highlight">{meta.highlight}</p>
+
+                      <div class="tech-stack">
+                        {project.stack.map((tech) => (
+                          <span class="tech-badge">{tech}</span>
+                        ))}
+                      </div>
+
+                      <a href={project.link} target="_blank" rel="noopener noreferrer" class="view-link">
+                        <span>View Project</span>
+                        <span aria-hidden="true">-&gt;</span>
+                      </a>
+                    </div>
+                  </div>
                 </Card>
               );
             })}
@@ -49,10 +129,14 @@ for (let i = 0; i < projects.length; i += chunkSize) {
         ))}
       </div>
 
-      <!-- Carousel Dots -->
-      <div class="carousel-dots" aria-hidden="true">
+      <div class="carousel-dots" aria-label="Project pages">
         {projectChunks.map((_, i) => (
-          <span class={`dot ${i === 0 ? 'active' : ''}`} data-slide={i}></span>
+          <button
+            class={`dot ${i === 0 ? 'active' : ''}`}
+            type="button"
+            aria-label={`Show project page ${i + 1}`}
+            data-slide={i}
+          ></button>
         ))}
       </div>
     </div>
@@ -60,35 +144,74 @@ for (let i = 0; i < projects.length; i += chunkSize) {
 </section>
 
 <script>
-  // Carousel functionality
-  const track = document.querySelector('.carousel-track');
-  const dots = document.querySelectorAll('.carousel-dots .dot');
+  const projectSections = document.querySelectorAll('[data-projects-section]');
 
-  if (track && dots.length > 0) {
-    // Update dots on scroll (touchpad swipe natively triggers this)
-    track.addEventListener('scroll', () => {
-      const scrollRatio = track.scrollLeft / track.clientWidth;
-      const currentSlide = Math.round(scrollRatio);
+  projectSections.forEach((section) => {
+    const track = section.querySelector('.carousel-track');
+    const dots = section.querySelectorAll('.carousel-dots .dot');
+    const cards = section.querySelectorAll('[data-project-card]');
 
-      dots.forEach((dot, index) => {
-        if (index === currentSlide) {
-          dot.classList.add('active');
-        } else {
-          dot.classList.remove('active');
+    const setActiveCard = (selectedCard, active) => {
+      selectedCard.classList.toggle('is-active', active);
+
+      const button = selectedCard.querySelector('[data-card-activator]');
+      if (button instanceof HTMLButtonElement) {
+        button.setAttribute('aria-expanded', String(active));
+      }
+    };
+
+    cards.forEach((card) => {
+      const button = card.querySelector('[data-card-activator]');
+
+      button?.addEventListener('click', (event) => {
+        event.stopPropagation();
+        const shouldActivate = !card.classList.contains('is-active');
+
+        cards.forEach((otherCard) => {
+          setActiveCard(otherCard, otherCard === card && shouldActivate);
+        });
+      });
+
+      card.addEventListener('click', (event) => {
+        const target = event.target;
+
+        if (!(target instanceof Element) || target.closest('a, button')) {
+          return;
+        }
+
+        const shouldActivate = !card.classList.contains('is-active');
+        cards.forEach((otherCard) => {
+          setActiveCard(otherCard, otherCard === card && shouldActivate);
+        });
+      });
+
+      card.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          setActiveCard(card, false);
         }
       });
     });
 
-    // Make dots clickable
-    dots.forEach((dot, index) => {
-      dot.addEventListener('click', () => {
-        track.scrollTo({
-          left: index * track.clientWidth,
-          behavior: 'smooth'
+    if (track && dots.length > 0) {
+      track.addEventListener('scroll', () => {
+        const scrollRatio = track.scrollLeft / track.clientWidth;
+        const currentSlide = Math.min(dots.length - 1, Math.max(0, Math.round(scrollRatio)));
+
+        dots.forEach((dot, index) => {
+          dot.classList.toggle('active', index === currentSlide);
         });
       });
-    });
-  }
+
+      dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+          track.scrollTo({
+            left: index * track.clientWidth,
+            behavior: 'smooth'
+          });
+        });
+      });
+    }
+  });
 </script>
 
 <style>
@@ -120,7 +243,7 @@ for (let i = 0; i < projects.length; i += chunkSize) {
   .eyebrow {
     margin: 0 0 0.5rem;
     font-size: 0.75rem;
-    letter-spacing: 0.15em;
+    letter-spacing: 0;
     text-transform: uppercase;
     color: var(--color-text-muted);
   }
@@ -132,14 +255,6 @@ for (let i = 0; i < projects.length; i += chunkSize) {
     color: var(--color-text);
   }
 
-  .year-range {
-    margin: 0;
-    color: var(--color-text-muted);
-    font-size: 0.95rem;
-    font-style: italic;
-  }
-
-  /* Carousel */
   .carousel-container {
     width: 100%;
     pointer-events: auto;
@@ -150,12 +265,12 @@ for (let i = 0; i < projects.length; i += chunkSize) {
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE/Edge */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
 
   .carousel-track::-webkit-scrollbar {
-    display: none; /* Chrome/Safari */
+    display: none;
   }
 
   .carousel-page {
@@ -170,54 +285,282 @@ for (let i = 0; i < projects.length; i += chunkSize) {
 
   .featured-card,
   .project-card {
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    min-height: 360px;
+    min-height: 390px;
   }
 
-  .icon-badge {
-    width: 2rem;
-    height: 2rem;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 1.5rem;
+  .project-shell {
+    --card-accent: var(--color-accent-cool);
+    --project-glow: rgba(125, 211, 252, 0.24);
+    --project-fill: rgba(125, 211, 252, 0.08);
+    padding: 1.35rem;
+    margin-bottom: 0;
+    overflow: hidden;
+    cursor: pointer;
+    isolation: isolate;
+    background:
+      linear-gradient(145deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.018)),
+      rgba(8, 10, 15, 0.52);
+    animation: cardRise 0.55s ease both;
+    animation-delay: var(--project-delay, 0ms);
+    transition:
+      transform 0.25s ease,
+      border-color 0.25s ease,
+      background 0.25s ease,
+      box-shadow 0.25s ease;
+  }
+
+  .tone-cool {
+    --card-accent: var(--color-accent-cool);
+    --project-glow: rgba(125, 211, 252, 0.26);
+    --project-fill: rgba(125, 211, 252, 0.09);
+  }
+
+  .tone-mint {
+    --card-accent: var(--color-accent-mint);
+    --project-glow: rgba(159, 240, 208, 0.24);
+    --project-fill: rgba(159, 240, 208, 0.08);
+  }
+
+  .tone-warm {
+    --card-accent: var(--color-accent-warm);
+    --project-glow: rgba(245, 215, 161, 0.25);
+    --project-fill: rgba(245, 215, 161, 0.08);
+  }
+
+  .project-shell::after {
+    content: '';
+    position: absolute;
+    right: -3rem;
+    bottom: -4.5rem;
+    width: 13rem;
+    height: 13rem;
     border-radius: 50%;
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    color: var(--color-text-muted);
-    font-weight: 700;
-    line-height: 1;
+    background: radial-gradient(circle, var(--project-glow), transparent 68%);
+    opacity: 0.45;
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    z-index: -1;
+  }
+
+  .project-shell:hover,
+  .project-shell:focus-within,
+  .project-shell.is-active {
+    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--card-accent) 45%, transparent);
+    box-shadow: 0 16px 38px rgba(0, 0, 0, 0.36);
+  }
+
+  .project-shell:hover::after,
+  .project-shell:focus-within::after,
+  .project-shell.is-active::after {
+    opacity: 0.9;
+    transform: translate(-0.8rem, -0.8rem) scale(1.08);
+  }
+
+  .project-card-topline {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.4rem;
+  }
+
+  .card-label,
+  .card-category {
+    margin: 0;
+    letter-spacing: 0;
   }
 
   .card-label {
-    margin: 0 0 1rem;
     color: var(--color-text);
-    font-size: 0.85rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
+    font-size: 0.78rem;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .card-category {
+    color: var(--card-accent);
+    font-size: 0.92rem;
+    font-weight: 650;
+    margin-top: 0.25rem;
+  }
+
+  .card-activator {
+    width: 2.5rem;
+    height: 2.5rem;
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.055);
+    color: var(--color-text);
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .card-activator:hover,
+  .card-activator:focus-visible {
+    background: var(--card-accent);
+    border-color: var(--card-accent);
+    color: var(--color-primary);
+    outline: none;
+  }
+
+  .activator-icon {
+    width: 0.9rem;
+    height: 0.9rem;
+    position: relative;
+    display: block;
+    transition: transform 0.22s ease;
+  }
+
+  .activator-icon::before,
+  .activator-icon::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 100%;
+    height: 2px;
+    border-radius: 999px;
+    background: currentColor;
+    transform: translate(-50%, -50%);
+  }
+
+  .activator-icon::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+
+  .project-shell.is-active .activator-icon {
+    transform: rotate(45deg);
+  }
+
+  .project-card-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    min-height: 14rem;
+  }
+
+  .project-number {
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    color: color-mix(in srgb, var(--card-accent) 70%, var(--color-text-muted));
+    font-size: 0.9rem;
+    font-weight: 800;
   }
 
   .card-title {
-    margin: 0 0 1.25rem;
+    margin: 0;
     color: var(--color-text);
-    font-size: clamp(1.45rem, 3vw, 2rem);
+    font-size: 1.85rem;
     line-height: 1.12;
   }
 
   .card-description {
-    margin: 0 0 1.5rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin: 0;
     color: var(--color-accent-light);
-    font-size: 1rem;
-    line-height: 1.7;
+    font-size: 0.98rem;
+    line-height: 1.68;
+  }
+
+  .project-card-footer {
+    position: relative;
+    min-height: 8.8rem;
+    margin-top: auto;
+  }
+
+  .project-preview,
+  .project-details {
+    position: absolute;
+    inset: 0;
+  }
+
+  .project-preview {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    background: var(--project-fill);
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s ease;
+  }
+
+  .preview-track {
+    height: 4.2rem;
+    display: flex;
+    align-items: flex-end;
+    gap: 0.38rem;
+  }
+
+  .preview-track span {
+    width: 0.55rem;
+    height: var(--bar-size);
+    min-height: 1rem;
+    border-radius: 999px;
+    background: var(--card-accent);
+    opacity: 0.78;
+  }
+
+  .preview-stack {
+    align-self: flex-start;
+    max-width: 9.5rem;
+    color: var(--color-text);
+    font-size: 0.9rem;
+    font-weight: 750;
+    text-align: right;
+    line-height: 1.35;
+  }
+
+  .project-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 0.85rem;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(0.8rem);
+    transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s ease;
+  }
+
+  .project-shell:hover .project-preview,
+  .project-shell:focus-within .project-preview,
+  .project-shell.is-active .project-preview {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-0.8rem);
+  }
+
+  .project-shell:hover .project-details,
+  .project-shell:focus-within .project-details,
+  .project-shell.is-active .project-details {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .project-highlight {
+    margin: 0;
+    color: var(--color-text);
+    font-size: 0.94rem;
+    line-height: 1.55;
   }
 
   .tech-stack {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    margin-top: auto;
-    padding-top: 1rem;
   }
 
   .tech-badge {
@@ -229,19 +572,31 @@ for (let i = 0; i < projects.length; i += chunkSize) {
     background: rgba(255, 255, 255, 0.08);
     color: var(--color-text-muted);
     font-size: 0.78rem;
-    font-weight: 600;
+    font-weight: 650;
   }
 
   .view-link {
     display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
     width: fit-content;
-    margin-top: 1.25rem;
-    color: var(--color-text);
-    font-size: 0.95rem;
-    font-weight: 700;
+    min-height: 2.55rem;
+    padding: 0.62rem 0.9rem;
+    border-radius: 8px;
+    background: var(--card-accent);
+    color: var(--color-primary);
+    font-size: 0.9rem;
+    font-weight: 800;
   }
 
-  /* Carousel Dots */
+  .view-link:hover,
+  .view-link:focus-visible {
+    transform: translateY(-2px);
+    outline: none;
+    box-shadow: 0 10px 24px var(--project-glow);
+  }
+
   .carousel-dots {
     display: flex;
     justify-content: center;
@@ -250,22 +605,48 @@ for (let i = 0; i < projects.length; i += chunkSize) {
   }
 
   .dot {
-    width: 0.6rem;
-    height: 0.6rem;
+    width: 0.62rem;
+    height: 0.62rem;
+    padding: 0;
+    border: 0;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.3);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background 0.25s ease, width 0.25s ease;
   }
 
   .dot.active {
     background: var(--color-text);
-    width: 1.8rem;
+    width: 1.85rem;
     border-radius: 999px;
   }
 
-  .dot:hover {
-    background: rgba(255, 255, 255, 0.6);
+  .dot:hover,
+  .dot:focus-visible {
+    background: rgba(255, 255, 255, 0.68);
+    outline: none;
+  }
+
+  @keyframes cardRise {
+    from {
+      opacity: 0;
+      transform: translateY(1rem);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 900px) {
+    .card-title {
+      font-size: 1.62rem;
+    }
+
+    .project-card-main {
+      min-height: 14.8rem;
+    }
   }
 
   @media (max-width: 768px) {
@@ -308,16 +689,52 @@ for (let i = 0; i < projects.length; i += chunkSize) {
     .featured-card,
     .project-card {
       min-height: auto;
-      padding: 1.25rem;
+    }
+
+    .project-shell {
+      padding: 1.2rem;
+      cursor: default;
+    }
+
+    .card-activator {
+      display: none;
+    }
+
+    .project-card-topline {
+      margin-bottom: 1rem;
+    }
+
+    .project-card-main {
+      min-height: auto;
+      gap: 0.75rem;
     }
 
     .card-title {
-      font-size: 1.65rem;
+      font-size: 1.55rem;
     }
 
     .card-description {
-      font-size: 0.98rem;
-      line-height: 1.65;
+      display: block;
+      font-size: 0.96rem;
+      line-height: 1.62;
+    }
+
+    .project-card-footer {
+      position: static;
+      min-height: 0;
+      margin-top: 1.25rem;
+    }
+
+    .project-preview {
+      display: none;
+    }
+
+    .project-details {
+      position: static;
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: none;
     }
 
     .carousel-dots {
@@ -330,18 +747,21 @@ for (let i = 0; i < projects.length; i += chunkSize) {
       padding: 0 0.875rem;
     }
 
-    .featured-card,
-    .project-card {
+    .project-shell {
       padding: 1rem;
     }
 
     .card-title {
-      font-size: 1.45rem;
+      font-size: 1.42rem;
     }
 
-    .card-description {
-      font-size: 0.94rem;
+    .card-description,
+    .project-highlight {
+      font-size: 0.92rem;
+    }
+
+    .view-link {
+      width: 100%;
     }
   }
 </style>
-

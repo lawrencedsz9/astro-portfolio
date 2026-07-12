@@ -1,4 +1,6 @@
 ---
+import type { HTMLAttributes } from 'astro/types';
+
 export interface Props {
   dark?: boolean;
   title?: string;
@@ -7,10 +9,12 @@ export interface Props {
   class?: string;
 }
 
-const { dark = false, title, body, href, class: className } = Astro.props as Props;
+type CardProps = Props & HTMLAttributes<'div'>;
+
+const { dark = false, title, body, href, class: className, ...attrs } = Astro.props as CardProps;
 ---
 
-<div class:list={['card', dark && 'dark', className]}>
+<div {...attrs} class:list={['card', dark && 'dark', className]}>
   {title && <h2 class="card-title">{title}</h2>}
   {body && <p class="card-body">{body}</p>}
   {href && <a href={href} class="card-link">Learn more</a>}
@@ -41,7 +45,7 @@ const { dark = false, title, body, href, class: className } = Astro.props as Pro
     left: 0;
     right: 0;
     height: 4px;
-    background: var(--color-text);
+    background: var(--card-accent, var(--color-text));
     transform: translateX(-100%);
     transition: transform 0.3s ease;
   }
