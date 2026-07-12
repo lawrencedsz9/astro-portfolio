@@ -9,7 +9,7 @@ const uniqueTechnologies = [...new Set(allTechnologies)];
 // Remove the old tech stack array and just use the project-based technologies
 ---
 
-<section class="about-section">
+<section class="about-section" id="about">
   <div class="container">
     <div class="about-content">
       <div class="about-text">
@@ -83,8 +83,11 @@ const uniqueTechnologies = [...new Set(allTechnologies)];
   .about-section {
     padding: 6rem 0;
     min-height: 100vh;
-    background: var(--color-primary);
+    background: transparent;
     color: var(--color-text);
+    position: relative;
+    z-index: 1;
+    pointer-events: none;
   }
 
   .container {
@@ -98,6 +101,14 @@ const uniqueTechnologies = [...new Set(allTechnologies)];
     grid-template-columns: 1fr 1fr;
     gap: 4rem;
     align-items: center;
+    pointer-events: none;
+  }
+
+  .about-text,
+  .about-text *,
+  .about-image,
+  .about-image * {
+    pointer-events: auto;
   }
 
   .about-text {

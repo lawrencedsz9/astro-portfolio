@@ -95,7 +95,10 @@ for (let i = 0; i < projects.length; i += chunkSize) {
   .projects-section {
     width: 100%;
     padding: 5rem 0;
-    background: var(--color-primary);
+    background: transparent;
+    position: relative;
+    z-index: 1;
+    pointer-events: none;
   }
 
   .projects-container {
@@ -111,6 +114,7 @@ for (let i = 0; i < projects.length; i += chunkSize) {
     margin-bottom: 3rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     padding-bottom: 1.5rem;
+    pointer-events: auto;
   }
 
   .eyebrow {
@@ -138,6 +142,7 @@ for (let i = 0; i < projects.length; i += chunkSize) {
   /* Carousel */
   .carousel-container {
     width: 100%;
+    pointer-events: auto;
   }
 
   .carousel-track {

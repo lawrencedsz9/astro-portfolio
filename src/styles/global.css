@@ -1,25 +1,28 @@
 :root {
     /* Minimalist Dark Palette */
-    --color-primary: #09090b; /* Deep almost-black */
-    --color-primary-rgb: 9, 9, 11;
-    --color-secondary: #18181b; 
-    --color-tertiary: #27272a;
+    --color-primary: #080a0f; /* Deep almost-black */
+    --color-primary-rgb: 8, 10, 15;
+    --color-secondary: #11151d;
+    --color-tertiary: #1a202b;
     --color-accent: #ffffff; /* White emphasis */
     --color-accent-rgb: 255, 255, 255;
-    --color-accent-light: #e4e4e7;
+    --color-accent-light: #dce7f3;
+    --color-accent-cool: #7dd3fc;
+    --color-accent-mint: #9ff0d0;
+    --color-accent-warm: #f5d7a1;
     --color-text: #fafafa;
-    --color-text-muted: #a1a1aa;
-    --color-bg-light: #18181b;
-    --color-bg-lighter: #27272a;
+    --color-text-muted: #aab4c3;
+    --color-bg-light: #11151d;
+    --color-bg-lighter: #1a202b;
     
     /* Grid Background Pattern */
-    --grid-pattern: linear-gradient(to right, rgba(255,255,255,0.05) 1px, transparent 1px),
-                    linear-gradient(to bottom, rgba(255,255,255,0.05) 1px, transparent 1px);
+    --grid-pattern: linear-gradient(to right, rgba(170,180,195,0.08) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(170,180,195,0.08) 1px, transparent 1px);
     
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
     --gradient-accent: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-light) 100%);
-    --gradient-text: linear-gradient(90deg, #ffffff 0%, #a1a1aa 100%);
+    --gradient-text: linear-gradient(90deg, #ffffff 0%, #7dd3fc 46%, #aab4c3 100%);
     
     /* Shadows */
     --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.2);
@@ -53,6 +56,11 @@
     padding: 0;
   }
   
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+  }
+
   body {
     font-family: 'Inter', 'Roboto', ui-sans-serif, system-ui, -apple-system, sans-serif;
     font-size: 18px;
