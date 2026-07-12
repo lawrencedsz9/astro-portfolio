@@ -1,18 +1,13 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Showcase from '../components/Showcase.astro';
-import FeaturedProject from '../components/FeaturedProject.astro';
+import SplineLanding from '../components/SplineLanding.astro';
 import Principles from '../components/Principles.astro';
 import Projects from '../components/Projects.astro';
 
 ---
 
 <Layout>
-	<Showcase showExtra={true} />
-
-	<div class="container" style="margin-top:2.5rem;">
-		<FeaturedProject />
-	</div>
+	<SplineLanding showExtra={true} />
 
 	<Principles />
 

@@ -1,6 +1,7 @@
 ---
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import SplineBackground from '../components/SplineBackground.astro';
 import '../styles/global.css';
 
 export interface Props {
@@ -22,6 +23,7 @@ const { title = 'Lawrence Dsouza' } = Astro.props as Props;
     <title>{title}</title>
   </head>
   <body>
+    <SplineBackground />
     <Header />
     <slot />
     <Footer />
@@ -37,6 +39,7 @@ const { title = 'Lawrence Dsouza' } = Astro.props as Props;
     display: flex;
     flex-direction: column;
     position: relative;
+    background: var(--color-primary);
   }
   h1 {
 		font-size: 3rem;

@@ -1,0 +1,194 @@
+---
+export interface Props {
+  scene?: string;
+}
+
+const { scene = '/scene.splinecode' } = Astro.props as Props;
+---
+
+<div class="spline-background" aria-hidden="true" data-spline-background data-scene={scene}>
+  <div class="spline-background__wash"></div>
+  <div class="spline-background__stage" data-spline-stage>
+    <canvas class="spline-background__canvas" data-spline-canvas></canvas>
+  </div>
+  <div class="spline-background__shade"></div>
+</div>
+
+<script>
+  import { Application } from '@splinetool/runtime';
+
+  const root = document.querySelector('[data-spline-background]');
+
+  if (root instanceof HTMLElement) {
+    const canvas = root.querySelector('[data-spline-canvas]');
+    const stage = root.querySelector('[data-spline-stage]');
+    const scene = root.dataset.scene || '/scene.splinecode';
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const mobileQuery = window.matchMedia('(max-width: 760px)');
+
+    if (canvas instanceof HTMLCanvasElement && stage instanceof HTMLElement) {
+      const app = new Application(canvas);
+
+      app.load(scene).then(() => {
+        root.classList.add('is-ready');
+      }).catch(() => {
+        root.classList.add('has-error');
+      });
+
+      const state = {
+        pointerX: 0,
+        pointerY: 0,
+        scroll: 0,
+        targetPointerX: 0,
+        targetPointerY: 0,
+        targetScroll: 0
+      };
+
+      const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+
+      const updatePointer = (event) => {
+        state.targetPointerX = clamp((event.clientX / Math.max(window.innerWidth, 1) - 0.5) * 2, -1, 1);
+        state.targetPointerY = clamp((event.clientY / Math.max(window.innerHeight, 1) - 0.5) * 2, -1, 1);
+      };
+
+      const updateScroll = () => {
+        const maxScroll = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
+        state.targetScroll = clamp(window.scrollY / maxScroll, 0, 1);
+      };
+
+      const render = () => {
+        state.pointerX += (state.targetPointerX - state.pointerX) * 0.08;
+        state.pointerY += (state.targetPointerY - state.pointerY) * 0.08;
+        state.scroll += (state.targetScroll - state.scroll) * 0.07;
+
+        const mobile = mobileQuery.matches;
+        const cursorX = state.pointerX * (mobile ? 10 : 26);
+        const cursorY = state.pointerY * (mobile ? 8 : 18);
+        const scrollY = state.scroll * (mobile ? -42 : -96);
+        const rotateX = state.pointerY * (mobile ? -0.8 : -2.4);
+        const rotateY = state.pointerX * (mobile ? 1.2 : 4);
+
+        stage.style.setProperty('--spline-cursor-x', `${cursorX.toFixed(2)}px`);
+        stage.style.setProperty('--spline-cursor-y', `${cursorY.toFixed(2)}px`);
+        stage.style.setProperty('--spline-scroll-y', `${scrollY.toFixed(2)}px`);
+        stage.style.setProperty('--spline-rotate-x', `${rotateX.toFixed(2)}deg`);
+        stage.style.setProperty('--spline-rotate-y', `${rotateY.toFixed(2)}deg`);
+
+        requestAnimationFrame(render);
+      };
+
+      window.addEventListener('scroll', updateScroll, { passive: true });
+      window.addEventListener('resize', updateScroll, { passive: true });
+
+      if (!reducedMotion) {
+        window.addEventListener('pointermove', updatePointer, { passive: true });
+        updateScroll();
+        requestAnimationFrame(render);
+      }
+    }
+  }
+</script>
+
+<style>
+  .spline-background {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    background: var(--color-primary);
+    pointer-events: auto;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+  }
+
+  .spline-background.is-ready {
+    opacity: 1;
+  }
+
+  .spline-background__stage {
+    --spline-cursor-x: 0px;
+    --spline-cursor-y: 0px;
+    --spline-scroll-y: 0px;
+    --spline-rotate-x: 0deg;
+    --spline-rotate-y: 0deg;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: max(122vw, 122vh);
+    height: max(122vw, 122vh);
+    transform:
+      translate3d(calc(-50% + 20vw + var(--spline-cursor-x)), calc(-50% + var(--spline-cursor-y) + var(--spline-scroll-y)), 0)
+      rotateX(var(--spline-rotate-x))
+      rotateY(var(--spline-rotate-y));
+    transform-style: preserve-3d;
+    pointer-events: auto;
+    will-change: transform;
+  }
+
+  .spline-background__canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    cursor: grab;
+    pointer-events: auto;
+    touch-action: pan-y;
+  }
+
+  .spline-background__canvas:active {
+    cursor: grabbing;
+  }
+
+  .spline-background__wash,
+  .spline-background__shade {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .spline-background__wash {
+    background:
+      linear-gradient(90deg, rgba(8, 10, 15, 0.94) 0%, rgba(8, 10, 15, 0.62) 38%, rgba(8, 10, 15, 0.18) 100%),
+      radial-gradient(circle at 50% 38%, rgba(125, 211, 252, 0.13), rgba(8, 10, 15, 0) 42%);
+  }
+
+  .spline-background__shade {
+    background: linear-gradient(180deg, rgba(8, 10, 15, 0.14) 0%, rgba(8, 10, 15, 0.48) 70%, rgba(8, 10, 15, 0.9) 100%);
+  }
+
+  @media (max-width: 900px) {
+    .spline-background__stage {
+      width: max(148vw, 108vh);
+      height: max(148vw, 108vh);
+      transform:
+        translate3d(calc(-50% + 8vw + var(--spline-cursor-x)), calc(-50% - 8vh + var(--spline-cursor-y) + var(--spline-scroll-y)), 0)
+        rotateX(var(--spline-rotate-x))
+        rotateY(var(--spline-rotate-y));
+    }
+
+    .spline-background__wash {
+      background:
+        linear-gradient(180deg, rgba(8, 10, 15, 0.24) 0%, rgba(8, 10, 15, 0.72) 56%, rgba(8, 10, 15, 0.96) 100%),
+        radial-gradient(circle at 50% 24%, rgba(125, 211, 252, 0.12), rgba(8, 10, 15, 0) 48%);
+    }
+  }
+
+  @media (max-width: 520px) {
+    .spline-background__stage {
+      width: max(176vw, 100vh);
+      height: max(176vw, 100vh);
+      transform:
+        translate3d(calc(-50% + 3vw + var(--spline-cursor-x)), calc(-50% - 11vh + var(--spline-cursor-y) + var(--spline-scroll-y)), 0)
+        rotateX(var(--spline-rotate-x))
+        rotateY(var(--spline-rotate-y));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .spline-background,
+    .spline-background__stage {
+      transition: none;
+      will-change: auto;
+    }
+  }
+</style>

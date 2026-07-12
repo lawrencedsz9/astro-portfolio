@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@astrojs/netlify": "^6.3.2",
+    "@splinetool/runtime": "^1.12.98",
     "astro": "^5.7.10",
     "sharp": "^0.34.1"
   },

@@ -2,7 +2,7 @@
 const currentYear = new Date().getFullYear();
 ---
 
-<footer class="footer">
+<footer class="footer" id="contact">
   <div class="footer-gradient"></div>
   <div class="container">
     <div class="footer-content">
@@ -10,10 +10,10 @@ const currentYear = new Date().getFullYear();
       
       <nav class="footer-links">
         <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="/about">About</a></li>
-          <li><a href="/projects">Projects</a></li>
-          <li><a href="/contact">Contact</a></li>
+          <li><a href="/#home">Home</a></li>
+          <li><a href="/#about">About</a></li>
+          <li><a href="/#projects">Projects</a></li>
+          <li><a href="/#contact">Contact</a></li>
         </ul>
       </nav>
 
@@ -34,7 +34,8 @@ const currentYear = new Date().getFullYear();
 
 <style>
   .footer {
-    background: var(--color-secondary);
+    background: rgba(8, 10, 15, 0.72);
+    backdrop-filter: blur(18px);
     color: var(--color-text);
     padding: 1.5rem 0;
     position: relative;

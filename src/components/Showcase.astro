@@ -7,7 +7,7 @@ export interface Props {
 
 const { 
   heading = "Hi, I'm Lawrence", 
-  text = "just a person who is interested to build and explore new things", 
+  text = "just a person who is interested to build and explore new things",
   showExtra = false 
 } = Astro.props as Props;
 ---
@@ -20,7 +20,7 @@ const {
           <span class="greeting">Developer.</span>
           <h1 class="giant-heading">{heading}</h1>
           <p class="subtitle">{text}</p>
-          
+
           <div class="tags-container">
             <span class="tag pill"><span class="dot js"></span> Web</span>
             <span class="tag pill"><span class="dot react"></span> Design</span>
@@ -82,7 +82,7 @@ const {
     font-size: clamp(3rem, 8vw, 6.5rem);
     font-weight: 800;
     line-height: 1.1;
-    letter-spacing: -0.03em;
+    letter-spacing: 0;
     margin: 0;
     color: var(--color-text);
   }
