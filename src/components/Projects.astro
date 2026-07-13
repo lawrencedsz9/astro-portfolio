@@ -2,45 +2,25 @@
 import { projects } from '../data.js';
 import Card from './Card.astro';
 
-const chunkSize = 4;
-const projectChunks = [];
+type Project = {
+  name: string;
+  category: string;
+  period: string;
+  description: string;
+  highlight: string;
+  link: string;
+  stack: string[];
+};
 
-for (let i = 0; i < projects.length; i += chunkSize) {
-  projectChunks.push(projects.slice(i, i + chunkSize));
+const typedProjects = projects as Project[];
+const chunkSize = 4;
+const projectChunks: Project[][] = [];
+
+for (let i = 0; i < typedProjects.length; i += chunkSize) {
+  projectChunks.push(typedProjects.slice(i, i + chunkSize));
 }
 
-const projectMeta = [
-  {
-    category: 'Voice AI',
-    highlight: 'Realtime assistant flow with wake word, tools, and streamed audio.',
-    tone: 'cool'
-  },
-  {
-    category: 'Computer Vision',
-    highlight: 'Motion, face detection, captures, recordings, and local visitor data.',
-    tone: 'mint'
-  },
-  {
-    category: 'Mobile App',
-    highlight: 'Club workflows for members, events, auth, and Firestore-backed data.',
-    tone: 'warm'
-  },
-  {
-    category: 'Portfolio',
-    highlight: 'A fast Astro build focused on responsive layout and performance.',
-    tone: 'cool'
-  },
-  {
-    category: 'Finance Tool',
-    highlight: 'Student-focused budgeting flow for tracking money with less friction.',
-    tone: 'mint'
-  },
-  {
-    category: 'FOSS Site',
-    highlight: 'A responsive single-page build for presenting open source software.',
-    tone: 'warm'
-  }
-];
+const tones = ['cool', 'mint', 'warm'];
 ---
 
 <section class="projects-section" id="projects" data-projects-section>
@@ -60,7 +40,7 @@ const projectMeta = [
               const projectIndex = pageIndex * chunkSize + index;
               const projectNumber = String(projectIndex + 1).padStart(2, '0');
               const isFeatured = projectIndex < 2;
-              const meta = projectMeta[projectIndex % projectMeta.length];
+              const tone = tones[projectIndex % tones.length];
               const detailsId = `project-details-${projectIndex}`;
               const isActive = projectIndex === 0;
 
@@ -69,13 +49,13 @@ const projectMeta = [
                   dark={true}
                   data-project-card="true"
                   data-project-index={projectIndex}
-                  class={`project-shell ${isFeatured ? 'featured-card' : 'project-card'} tone-${meta.tone} ${isActive ? 'is-active' : ''}`}
+                  class={`project-shell ${isFeatured ? 'featured-card' : 'project-card'} tone-${tone} ${isActive ? 'is-active' : ''}`}
                   style={`--project-delay: ${projectIndex * 70}ms;`}
                 >
                   <div class="project-card-topline">
                     <div>
                       <p class="card-label">{isFeatured ? 'Featured' : 'Project'}</p>
-                      <p class="card-category">{meta.category}</p>
+                      <p class="card-category">{project.category}</p>
                     </div>
 
                     <button
@@ -93,6 +73,7 @@ const projectMeta = [
                   <div class="project-card-main">
                     <span class="project-number" aria-hidden="true">{projectNumber}</span>
                     <h3 class="card-title">{project.name}</h3>
+                    <p class="project-period">{project.period}</p>
                     <p class="card-description">{project.description}</p>
                   </div>
 
@@ -104,11 +85,11 @@ const projectMeta = [
                         <span style="--bar-size: 48%;"></span>
                         <span style="--bar-size: 74%;"></span>
                       </div>
-                      <span class="preview-stack">{project.stack[0] ?? meta.category}</span>
+                      <span class="preview-stack">{project.stack[0] ?? project.category}</span>
                     </div>
 
                     <div class="project-details" id={detailsId} data-project-details>
-                      <p class="project-highlight">{meta.highlight}</p>
+                      <p class="project-highlight">{project.highlight}</p>
 
                       <div class="tech-stack">
                         {project.stack.map((tech) => (
@@ -151,7 +132,7 @@ const projectMeta = [
     const dots = section.querySelectorAll('.carousel-dots .dot');
     const cards = section.querySelectorAll('[data-project-card]');
 
-    const setActiveCard = (selectedCard, active) => {
+    const setActiveCard = (selectedCard = section, active = false) => {
       selectedCard.classList.toggle('is-active', active);
 
       const button = selectedCard.querySelector('[data-card-activator]');
@@ -186,13 +167,13 @@ const projectMeta = [
       });
 
       card.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') {
+        if (event instanceof KeyboardEvent && event.key === 'Escape') {
           setActiveCard(card, false);
         }
       });
     });
 
-    if (track && dots.length > 0) {
+    if (track instanceof HTMLElement && dots.length > 0) {
       track.addEventListener('scroll', () => {
         const scrollRatio = track.scrollLeft / track.clientWidth;
         const currentSlide = Math.min(dots.length - 1, Math.max(0, Math.round(scrollRatio)));
@@ -243,9 +224,10 @@ const projectMeta = [
   .eyebrow {
     margin: 0 0 0.5rem;
     font-size: 0.75rem;
-    letter-spacing: 0;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--color-text-muted);
+    font-weight: 800;
   }
 
   .section-header h2 {
@@ -302,11 +284,7 @@ const projectMeta = [
       rgba(8, 10, 15, 0.52);
     animation: cardRise 0.55s ease both;
     animation-delay: var(--project-delay, 0ms);
-    transition:
-      transform 0.25s ease,
-      border-color 0.25s ease,
-      background 0.25s ease,
-      box-shadow 0.25s ease;
+    transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
   }
 
   .tone-cool {
@@ -366,7 +344,8 @@ const projectMeta = [
   }
 
   .card-label,
-  .card-category {
+  .card-category,
+  .project-period {
     margin: 0;
     letter-spacing: 0;
   }
@@ -440,7 +419,7 @@ const projectMeta = [
   .project-card-main {
     display: flex;
     flex-direction: column;
-    gap: 0.9rem;
+    gap: 0.75rem;
     min-height: 14rem;
   }
 
@@ -454,8 +433,14 @@ const projectMeta = [
   .card-title {
     margin: 0;
     color: var(--color-text);
-    font-size: 1.85rem;
+    font-size: 1.75rem;
     line-height: 1.12;
+  }
+
+  .project-period {
+    color: var(--color-text-muted);
+    font-size: 0.82rem;
+    font-weight: 750;
   }
 
   .card-description {
@@ -465,8 +450,8 @@ const projectMeta = [
     overflow: hidden;
     margin: 0;
     color: var(--color-accent-light);
-    font-size: 0.98rem;
-    line-height: 1.68;
+    font-size: 0.96rem;
+    line-height: 1.62;
   }
 
   .project-card-footer {
@@ -553,8 +538,8 @@ const projectMeta = [
   .project-highlight {
     margin: 0;
     color: var(--color-text);
-    font-size: 0.94rem;
-    line-height: 1.55;
+    font-size: 0.93rem;
+    line-height: 1.5;
   }
 
   .tech-stack {
@@ -628,20 +613,13 @@ const projectMeta = [
   }
 
   @keyframes cardRise {
-    from {
-      opacity: 0;
-      transform: translateY(1rem);
-    }
-
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(1rem); }
+    to { opacity: 1; transform: translateY(0); }
   }
 
   @media (max-width: 900px) {
     .card-title {
-      font-size: 1.62rem;
+      font-size: 1.56rem;
     }
 
     .project-card-main {
@@ -669,13 +647,15 @@ const projectMeta = [
     }
 
     .carousel-track {
-      display: block;
-      overflow: visible;
-      scroll-snap-type: none;
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
     }
 
     .carousel-page {
-      min-width: 0;
+      min-width: 100%;
+      flex: 0 0 100%;
+      scroll-snap-align: start;
       display: grid;
       grid-template-columns: 1fr;
       grid-template-rows: none;
@@ -683,7 +663,7 @@ const projectMeta = [
     }
 
     .carousel-page + .carousel-page {
-      margin-top: 1rem;
+      margin-top: 0;
     }
 
     .featured-card,
@@ -738,7 +718,7 @@ const projectMeta = [
     }
 
     .carousel-dots {
-      display: none;
+      display: flex;
     }
   }
 
@@ -752,7 +732,7 @@ const projectMeta = [
     }
 
     .card-title {
-      font-size: 1.42rem;
+      font-size: 1.38rem;
     }
 
     .card-description,
@@ -765,3 +745,6 @@ const projectMeta = [
     }
   }
 </style>
+
+
+

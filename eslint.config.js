@@ -1,7 +1,15 @@
-import js from '@eslint/js';
+﻿import js from '@eslint/js';
 import globals from 'globals';
 
 export default [
+  {
+    ignores: [
+      '.astro/**',
+      '.netlify/**',
+      'dist/**',
+      'node_modules/**',
+    ],
+  },
   {
     files: ['**/*.js', '**/*.mjs', '**/*.cjs', '**/*.jsx', '**/*.ts', '**/*.tsx'],
     languageOptions: {
@@ -14,10 +22,10 @@ export default [
     },
     rules: {
       ...js.configs.recommended.rules,
-      'semi': ['error', 'always'],
-      'quotes': ['error', 'single'],
-      'indent': ['error', 2],
+      semi: ['error', 'always'],
+      quotes: ['error', 'single'],
+      indent: ['error', 2],
       'no-unused-vars': 'warn',
     },
   },
-]; 
+];

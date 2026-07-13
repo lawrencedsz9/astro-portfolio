@@ -1,13 +1,22 @@
----
+﻿---
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { profile } from '../data.js';
 import '../styles/global.css';
 
 export interface Props {
   title?: string;
+  description?: string;
 }
 
-const { title = 'Lawrence Dsouza' } = Astro.props as Props;
+const {
+  title = `${profile.name} | ${profile.role}`,
+  description = profile.metaDescription,
+} = Astro.props as Props;
+
+const siteUrl = `https://${profile.website}`;
+const canonicalUrl = `${siteUrl}${Astro.url.pathname === '/' ? '' : Astro.url.pathname}`;
+const socialImage = `${siteUrl}/portrait.svg`;
 ---
 
 <!DOCTYPE html>
@@ -16,9 +25,24 @@ const { title = 'Lawrence Dsouza' } = Astro.props as Props;
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#080a0f" />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={socialImage} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage} />
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <title>{title}</title>
   </head>
   <body>
@@ -27,22 +51,18 @@ const { title = 'Lawrence Dsouza' } = Astro.props as Props;
     <Footer />
   </body>
 </html>
+
 <style is:global>
-	html {
-		font-family: system-ui, sans-serif;
-		background-color: #0d0d0d;
-	}
-  body{
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: #0d0d0d;
+  }
+
+  body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     position: relative;
     background: var(--color-primary);
   }
-  h1 {
-		font-size: 3rem;
-		font-weight: 800;
-		margin: 0;
-		color: azure;
-	}
 </style>

@@ -1,13 +1,17 @@
----
+﻿---
+import { profile } from '../data.js';
+
 export interface Props {
   heading?: string;
   text?: string;
+  tags?: string[];
   showExtra?: boolean;
 }
 
 const {
-  heading = "Hi, I'm Lawrence",
-  text = "just a person who is interested to build and explore new things",
+  heading = profile.hero.heading,
+  text = profile.hero.text,
+  tags = profile.hero.tags,
   showExtra = false
 } = Astro.props as Props;
 ---
@@ -15,14 +19,14 @@ const {
 <section class="spline-landing" id="home">
   <div class="container landing-container">
     <div class="landing-content">
-      <span class="greeting">Developer.</span>
+      <span class="greeting">{profile.role}</span>
       <h1 class="giant-heading">{heading}</h1>
       <p class="subtitle">{text}</p>
 
-      <div class="tags-container">
-        <span class="tag"><span class="dot web"></span> Web</span>
-        <span class="tag"><span class="dot design"></span> Design</span>
-        <span class="tag"><span class="dot systems"></span> Problem Solving</span>
+      <div class="tags-container" aria-label="Core skills">
+        {tags.map((tag, index) => (
+          <span class="tag"><span class={`dot tone-${index % 4}`}></span> {tag}</span>
+        ))}
       </div>
 
       {showExtra && (
@@ -52,7 +56,7 @@ const {
   }
 
   .landing-content {
-    width: min(620px, 100%);
+    width: min(690px, 100%);
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -86,7 +90,7 @@ const {
   .subtitle {
     font-size: clamp(1.05rem, 2vw, 1.35rem);
     color: var(--color-text-muted);
-    max-width: 560px;
+    max-width: 640px;
     margin: 0;
     font-weight: 300;
   }
@@ -120,9 +124,10 @@ const {
     flex: 0 0 auto;
   }
 
-  .dot.web { background: var(--color-accent-cool); }
-  .dot.design { background: var(--color-accent-warm); }
-  .dot.systems { background: var(--color-accent-mint); }
+  .tone-0 { background: var(--color-accent-cool); }
+  .tone-1 { background: var(--color-accent-mint); }
+  .tone-2 { background: var(--color-accent-warm); }
+  .tone-3 { background: var(--color-accent-light); }
 
   .landing-cta {
     display: flex;
@@ -147,7 +152,6 @@ const {
       max-width: 10ch;
       font-size: clamp(3rem, 13vw, 4.8rem);
     }
-
   }
 
   @media (max-width: 520px) {

@@ -1,18 +1,21 @@
----
+﻿---
 import Layout from '../layouts/Layout.astro';
 import SplineBackground from '../components/SplineBackground.astro';
 import SplineLanding from '../components/SplineLanding.astro';
 import Principles from '../components/Principles.astro';
 import Projects from '../components/Projects.astro';
-
+import ContactSection from '../components/ContactSection.astro';
+import { profile } from '../data.js';
 ---
 
-<Layout>
-	<SplineBackground />
+<Layout title={`${profile.name} | ${profile.role}`} description={profile.metaDescription}>
+  <SplineBackground />
 
-	<SplineLanding showExtra={true} />
+  <SplineLanding showExtra={true} />
 
-	<Principles />
+  <Principles />
 
-	<Projects />
+  <Projects />
+
+  <ContactSection />
 </Layout>

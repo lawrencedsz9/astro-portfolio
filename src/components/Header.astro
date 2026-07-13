@@ -1,17 +1,17 @@
----
-import { Image } from 'astro:assets';
+﻿---
 import logo from '../images/user.jpg';
+import { profile } from '../data.js';
 ---
 
 <header class="header">
   <div class="container">
     <div class="logo">
       <a href="/#home" class="profile">
-        <img src={logo.src} alt="Profile" width="60" height="60" />
-        <span class="name">Lawrence Dsouza</span>
+        <img src={logo.src} alt="Lawrence Dsouza" width="60" height="60" />
+        <span class="name">{profile.displayName}</span>
       </a>
     </div>
-    <nav class="nav">
+    <nav class="nav" id="site-nav" aria-label="Main navigation">
       <ul>
         <li><a href="/#home">Home</a></li>
         <li><a href="/#about">About</a></li>
@@ -19,7 +19,7 @@ import logo from '../images/user.jpg';
         <li><a href="/#contact">Contact</a></li>
       </ul>
     </nav>
-    <button class="mobile-menu-btn" aria-label="Toggle Menu">
+    <button class="mobile-menu-btn" aria-label="Toggle Menu" aria-controls="site-nav" aria-expanded="false">
       <span class="bar"></span>
       <span class="bar"></span>
       <span class="bar"></span>
@@ -28,22 +28,27 @@ import logo from '../images/user.jpg';
 </header>
 
 <script>
-  // Mobile menu toggle
   document.addEventListener('DOMContentLoaded', () => {
     const menuBtn = document.querySelector('.mobile-menu-btn');
     const nav = document.querySelector('.nav');
+
+    const setMenuOpen = (open: boolean) => {
+      menuBtn?.classList.toggle('open', open);
+      nav?.classList.toggle('open', open);
+      document.body.classList.toggle('menu-open', open);
+
+      if (menuBtn instanceof HTMLButtonElement) {
+        menuBtn.setAttribute('aria-expanded', String(open));
+      }
+    };
     
     menuBtn?.addEventListener('click', () => {
-      menuBtn.classList.toggle('open');
-      nav?.classList.toggle('open');
-      document.body.classList.toggle('menu-open');
+      setMenuOpen(!menuBtn.classList.contains('open'));
     });
 
     nav?.querySelectorAll('a').forEach((link) => {
       link.addEventListener('click', () => {
-        menuBtn?.classList.remove('open');
-        nav.classList.remove('open');
-        document.body.classList.remove('menu-open');
+        setMenuOpen(false);
       });
     });
   });
@@ -97,7 +102,7 @@ import logo from '../images/user.jpg';
     white-space: nowrap;
     color: #fff;
     display: block;
-    text-transform: lowercase;
+    text-transform: none;
   }
 
   .header img {
@@ -125,11 +130,13 @@ import logo from '../images/user.jpg';
     text-transform: lowercase;
   }
 
-  .nav ul li a:hover {
+  .nav ul li a:hover,
+  .nav ul li a:focus-visible {
     color: #fff;
     background: rgba(255, 255, 255, 0.1);
     padding: 0.5rem 1rem;
     border-radius: 100px;
+    outline: none;
   }
 
   .mobile-menu-btn {
@@ -239,7 +246,6 @@ import logo from '../images/user.jpg';
       text-align: center;
     }
 
-    /* Prevent scrolling when menu is open */
     :global(body.menu-open) {
       overflow: hidden;
     }
@@ -261,3 +267,4 @@ import logo from '../images/user.jpg';
     }
   }
 </style>
+
