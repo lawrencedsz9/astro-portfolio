@@ -31,7 +31,8 @@
     "@opentelemetry/sdk-trace-node": "2.9.0",
     "esbuild": "0.28.1",
     "std-env": "4.1.0",
-    "import-in-the-middle": "3.3.0"
+    "import-in-the-middle": "3.3.0",
+    "bare-path": "3.1.0"
   },
   "engines": {
     "node": ">=22.12.0"
