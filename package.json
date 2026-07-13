@@ -29,7 +29,8 @@
     "@opentelemetry/resources": "2.9.0",
     "@opentelemetry/sdk-trace-base": "2.9.0",
     "@opentelemetry/sdk-trace-node": "2.9.0",
-    "esbuild": "0.28.1"
+    "esbuild": "0.28.1",
+    "std-env": "4.1.0"
   },
   "engines": {
     "node": ">=22.12.0"
