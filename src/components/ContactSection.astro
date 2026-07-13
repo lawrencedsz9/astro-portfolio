@@ -1,0 +1,153 @@
+﻿---
+import { profile } from '../data.js';
+---
+
+<section class="contact-section" id="contact">
+  <div class="container">
+    <div class="contact-card">
+      <div class="contact-copy">
+        <p class="eyebrow">Contact</p>
+        <h2>Want to discuss backend, AI, or automation work?</h2>
+        <p>
+          I am open to software engineering roles, internships, and projects involving backend APIs,
+          AI applications, real-time systems, and computer vision workflows.
+        </p>
+      </div>
+
+      <div class="contact-actions" aria-label="Contact links">
+        <a href={`mailto:${profile.email}`} class="primary-action">Email Me</a>
+        <a href={profile.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        <a href={profile.github} target="_blank" rel="noopener noreferrer">GitHub</a>
+      </div>
+
+      <div class="contact-details">
+        <span>{profile.location}</span>
+        <span>{profile.email}</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact-section {
+    position: relative;
+    z-index: 1;
+    padding: 5rem 0 4rem;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  .contact-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 2rem;
+    align-items: center;
+    padding: 2rem;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background:
+      linear-gradient(135deg, rgba(125, 211, 252, 0.13), rgba(159, 240, 208, 0.06)),
+      rgba(8, 10, 15, 0.72);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.28);
+  }
+
+  .eyebrow {
+    margin: 0 0 0.5rem;
+    color: var(--color-accent-cool);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .contact-copy h2 {
+    margin: 0;
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    line-height: 1.12;
+    max-width: 760px;
+  }
+
+  .contact-copy p:last-child {
+    margin: 1rem 0 0;
+    color: var(--color-text-muted);
+    max-width: 720px;
+  }
+
+  .contact-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.75rem;
+  }
+
+  .contact-actions a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.75rem;
+    padding: 0.72rem 1rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--color-text);
+    font-size: 0.92rem;
+    font-weight: 800;
+  }
+
+  .contact-actions .primary-action {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-primary);
+  }
+
+  .contact-actions a:hover,
+  .contact-actions a:focus-visible {
+    transform: translateY(-2px);
+    outline: none;
+  }
+
+  .contact-details {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.25rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    font-weight: 650;
+  }
+
+  @media (max-width: 760px) {
+    .contact-section {
+      padding: 4rem 0 3rem;
+    }
+
+    .container {
+      padding: 0 0.875rem;
+    }
+
+    .contact-card {
+      grid-template-columns: 1fr;
+      padding: 1.25rem;
+    }
+
+    .contact-copy h2 {
+      text-align: left;
+    }
+
+    .contact-actions {
+      justify-content: stretch;
+    }
+
+    .contact-actions a {
+      flex: 1 1 9rem;
+    }
+  }
+</style>
+

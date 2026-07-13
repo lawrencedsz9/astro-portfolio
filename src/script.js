@@ -1,4 +1,4 @@
-function createTabs(element) {
+﻿function createTabs(element) {
   const header = element.querySelector('.tabs-header');
   const content = element.querySelector('.tabs-content');
   const tab_headers = [...header.children];
@@ -24,9 +24,10 @@ function createTabs(element) {
 
   default_tab_index = default_tab_index === -1 ? 0 : default_tab_index;
   setTab(default_tab_index);
-  tab_headers.forEach((x, i) => (x.onclick = (event) => setTab(i)));
+  tab_headers.forEach((x, i) => (x.onclick = () => setTab(i)));
 }
 
 
 // Run
 [...document.querySelectorAll('.tabs')].forEach((x) => createTabs(x));
+

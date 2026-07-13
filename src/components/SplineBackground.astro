@@ -25,21 +25,53 @@ const { scene = '/scene.splinecode' } = Astro.props as Props;
     const mobileQuery = window.matchMedia('(max-width: 760px)');
 
     if (canvas instanceof HTMLCanvasElement && stage instanceof HTMLElement) {
-      const loadSpline = async () => {
+      let splineApp: { load: (url: string) => Promise<unknown>; dispose: () => void } | undefined;
+
+      async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, message: string) {
+        let timeoutId = 0;
+
+        const timeout = new Promise<never>((_, reject) => {
+          timeoutId = window.setTimeout(() => reject(new Error(message)), timeoutMs);
+        });
+
+        return Promise.race([promise, timeout]).finally(() => window.clearTimeout(timeoutId));
+      }
+
+      const loadSpline = async (attempt = 1) => {
+        root.classList.add('is-loading');
+        root.classList.remove('has-error');
+
         try {
           const { Application } = await import('@splinetool/runtime');
-          const app = new Application(canvas);
-          await app.load(scene);
+          splineApp?.dispose();
+          splineApp = new Application(canvas);
+          await withTimeout(splineApp.load(scene), 18000, `Timed out loading Spline scene: ${scene}`);
+          root.classList.remove('is-loading');
           root.classList.add('is-ready');
-        } catch {
+        } catch (error) {
+          splineApp?.dispose();
+          splineApp = undefined;
+
+          if (attempt === 1) {
+            window.setTimeout(() => void loadSpline(2), 1200);
+            return;
+          }
+
+          console.warn('[SplineBackground] Unable to load Spline scene.', error);
+          root.classList.remove('is-loading');
           root.classList.add('has-error');
         }
       };
 
-      if ('requestIdleCallback' in window) {
-        window.requestIdleCallback(loadSpline, { timeout: 1600 });
+      const scheduleLoad = () => void loadSpline();
+      const requestIdle = (window as Window & {
+        requestIdleCallback?: (callback: IdleRequestCallback, options?: IdleRequestOptions) => number;
+      }).requestIdleCallback;
+
+      if (typeof requestIdle === 'function') {
+        requestIdle(scheduleLoad, { timeout: 1600 });
       } else {
-        window.setTimeout(loadSpline, 900);
+        window.setTimeout(scheduleLoad, 900);
       }
 
       const state = {
@@ -51,9 +83,9 @@ const { scene = '/scene.splinecode' } = Astro.props as Props;
         targetScroll: 0
       };
 
-      const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+      const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 
-      const updatePointer = (event) => {
+      const updatePointer = (event: PointerEvent) => {
         state.targetPointerX = clamp((event.clientX / Math.max(window.innerWidth, 1) - 0.5) * 2, -1, 1);
         state.targetPointerY = clamp((event.clientY / Math.max(window.innerHeight, 1) - 0.5) * 2, -1, 1);
       };
@@ -63,7 +95,14 @@ const { scene = '/scene.splinecode' } = Astro.props as Props;
         state.targetScroll = clamp(window.scrollY / maxScroll, 0, 1);
       };
 
+      let frameId = 0;
+      let running = false;
+
       const render = () => {
+        if (!running) {
+          return;
+        }
+
         state.pointerX += (state.targetPointerX - state.pointerX) * 0.08;
         state.pointerY += (state.targetPointerY - state.pointerY) * 0.08;
         state.scroll += (state.targetScroll - state.scroll) * 0.07;
@@ -81,7 +120,24 @@ const { scene = '/scene.splinecode' } = Astro.props as Props;
         stage.style.setProperty('--spline-rotate-x', `${rotateX.toFixed(2)}deg`);
         stage.style.setProperty('--spline-rotate-y', `${rotateY.toFixed(2)}deg`);
 
-        requestAnimationFrame(render);
+        frameId = requestAnimationFrame(render);
+      };
+
+      const startRender = () => {
+        if (running || reducedMotion) {
+          return;
+        }
+
+        running = true;
+        updateScroll();
+        frameId = requestAnimationFrame(render);
+      };
+
+      const stopRender = () => {
+        running = false;
+        if (frameId) {
+          cancelAnimationFrame(frameId);
+        }
       };
 
       window.addEventListener('scroll', updateScroll, { passive: true });
@@ -89,8 +145,14 @@ const { scene = '/scene.splinecode' } = Astro.props as Props;
 
       if (!reducedMotion) {
         window.addEventListener('pointermove', updatePointer, { passive: true });
-        updateScroll();
-        requestAnimationFrame(render);
+        document.addEventListener('visibilitychange', () => {
+          if (document.hidden) {
+            stopRender();
+          } else {
+            startRender();
+          }
+        });
+        startRender();
       }
     }
   }
@@ -199,3 +261,7 @@ const { scene = '/scene.splinecode' } = Astro.props as Props;
     }
   }
 </style>
+
+
+
+
