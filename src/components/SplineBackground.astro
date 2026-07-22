@@ -25,7 +25,46 @@ const { scene = '/scene.splinecode' } = Astro.props as Props;
     const mobileQuery = window.matchMedia('(max-width: 760px)');
 
     if (canvas instanceof HTMLCanvasElement && stage instanceof HTMLElement) {
-      let splineApp: { load: (url: string) => Promise<unknown>; dispose: () => void } | undefined;
+      // Spline's runtime binds its own wheel listener to zoom the camera and
+      // calls preventDefault(), which otherwise blocks page scrolling on any
+      // two-finger trackpad swipe. Registered before the scene loads so this
+      // listener runs first and can veto it — pinch/ctrl+scroll still zooms.
+      canvas.addEventListener(
+        'wheel',
+        (event) => {
+          if (!event.ctrlKey && !event.metaKey) {
+            event.stopImmediatePropagation();
+          }
+        },
+        { passive: true }
+      );
+
+      type SplineApp = {
+        load: (url: string) => Promise<unknown>;
+        dispose: () => void;
+        stop: () => void;
+        play: () => void;
+      };
+
+      let splineApp: SplineApp | undefined;
+
+      // Cellular / data-saver / low-end devices should not pay for a ~1MB
+      // WebGL scene just for a decorative backdrop. Detect those up front and
+      // fall back to the CSS gradient instead of ever loading Spline.
+      const prefersLite = () => {
+        const nav = navigator as Navigator & {
+          connection?: { saveData?: boolean; effectiveType?: string };
+          deviceMemory?: number;
+        };
+        const conn = nav.connection;
+        if (conn?.saveData) return true;
+        if (conn?.effectiveType && /^(slow-2g|2g|3g)$/.test(conn.effectiveType)) return true;
+        if (typeof nav.deviceMemory === 'number' && nav.deviceMemory > 0 && nav.deviceMemory < 4) return true;
+        if (typeof nav.hardwareConcurrency === 'number' && nav.hardwareConcurrency > 0 && nav.hardwareConcurrency <= 2) {
+          return true;
+        }
+        return false;
+      };
 
       async function withTimeout<T>(promise: Promise<T>, timeoutMs: number, message: string) {
         let timeoutId = 0;
@@ -37,6 +76,31 @@ const { scene = '/scene.splinecode' } = Astro.props as Props;
         return Promise.race([promise, timeout]).finally(() => window.clearTimeout(timeoutId));
       }
 
+      // Pause the WebGL render (and Spline's own event/control loop) whenever
+      // the hero is scrolled out of view. There's no reason to keep painting a
+      // 3D scene that's hidden behind the rest of the page — this saves GPU and
+      // battery on both mobile and desktop while reading further down.
+      let heroVisible = true;
+
+      const observeHero = () => {
+        const hero = document.getElementById('home');
+        if (!hero || !('IntersectionObserver' in window)) return;
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            heroVisible = entries[0]?.isIntersecting ?? true;
+            if (!splineApp) return;
+            if (heroVisible) {
+              splineApp.play();
+            } else {
+              splineApp.stop();
+            }
+          },
+          { threshold: 0 }
+        );
+        observer.observe(hero);
+      };
+
       const loadSpline = async (attempt = 1) => {
         root.classList.add('is-loading');
         root.classList.remove('has-error');
@@ -44,10 +108,14 @@ const { scene = '/scene.splinecode' } = Astro.props as Props;
         try {
           const { Application } = await import('@splinetool/runtime');
           splineApp?.dispose();
-          splineApp = new Application(canvas);
-          await withTimeout(splineApp.load(scene), 18000, `Timed out loading Spline scene: ${scene}`);
+          const app = new Application(canvas) as unknown as SplineApp;
+          splineApp = app;
+          await withTimeout(app.load(scene), 18000, `Timed out loading Spline scene: ${scene}`);
           root.classList.remove('is-loading');
           root.classList.add('is-ready');
+          // Honour the current scroll position: if the hero already scrolled
+          // away before the scene finished loading, keep it paused.
+          if (!heroVisible) app.stop();
         } catch (error) {
           splineApp?.dispose();
           splineApp = undefined;
@@ -68,10 +136,16 @@ const { scene = '/scene.splinecode' } = Astro.props as Props;
         requestIdleCallback?: (callback: IdleRequestCallback, options?: IdleRequestOptions) => number;
       }).requestIdleCallback;
 
-      if (typeof requestIdle === 'function') {
-        requestIdle(scheduleLoad, { timeout: 1600 });
+      if (prefersLite()) {
+        // Skip WebGL entirely; the CSS gradient backdrop stands in for it.
+        root.classList.add('is-lite');
       } else {
-        window.setTimeout(scheduleLoad, 900);
+        observeHero();
+        if (typeof requestIdle === 'function') {
+          requestIdle(scheduleLoad, { timeout: 1600 });
+        } else {
+          window.setTimeout(scheduleLoad, 900);
+        }
       }
 
       const state = {
@@ -85,18 +159,30 @@ const { scene = '/scene.splinecode' } = Astro.props as Props;
 
       const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 
-      const updatePointer = (event: PointerEvent) => {
-        state.targetPointerX = clamp((event.clientX / Math.max(window.innerWidth, 1) - 0.5) * 2, -1, 1);
-        state.targetPointerY = clamp((event.clientY / Math.max(window.innerHeight, 1) - 0.5) * 2, -1, 1);
-      };
+      // document.documentElement.scrollHeight forces a synchronous layout.
+      // Reading it inside the scroll handler (which can fire dozens of times
+      // per second during momentum scroll) forced a reflow on every event.
+      // Cache it and only recompute on resize/load instead.
+      let maxScroll = 1;
+      let mobile = mobileQuery.matches;
 
-      const updateScroll = () => {
-        const maxScroll = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
-        state.targetScroll = clamp(window.scrollY / maxScroll, 0, 1);
+      const recalcMaxScroll = () => {
+        maxScroll = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
       };
 
       let frameId = 0;
       let running = false;
+
+      // The lerp below only asymptotically reaches its target, so without a
+      // settle check this loop would call requestAnimationFrame forever —
+      // burning a wakeup every frame even when the mouse and scroll position
+      // haven't moved. Stop once converged and only wake on new input.
+      const SETTLE_EPSILON = 0.0005;
+
+      const isSettled = () =>
+        Math.abs(state.targetPointerX - state.pointerX) < SETTLE_EPSILON &&
+        Math.abs(state.targetPointerY - state.pointerY) < SETTLE_EPSILON &&
+        Math.abs(state.targetScroll - state.scroll) < SETTLE_EPSILON;
 
       const render = () => {
         if (!running) {
@@ -107,7 +193,6 @@ const { scene = '/scene.splinecode' } = Astro.props as Props;
         state.pointerY += (state.targetPointerY - state.pointerY) * 0.08;
         state.scroll += (state.targetScroll - state.scroll) * 0.07;
 
-        const mobile = mobileQuery.matches;
         const cursorX = state.pointerX * (mobile ? 10 : 26);
         const cursorY = state.pointerY * (mobile ? 8 : 18);
         const scrollY = state.scroll * (mobile ? -42 : -96);
@@ -120,16 +205,24 @@ const { scene = '/scene.splinecode' } = Astro.props as Props;
         stage.style.setProperty('--spline-rotate-x', `${rotateX.toFixed(2)}deg`);
         stage.style.setProperty('--spline-rotate-y', `${rotateY.toFixed(2)}deg`);
 
+        if (isSettled()) {
+          running = false;
+          return;
+        }
+
         frameId = requestAnimationFrame(render);
       };
 
-      const startRender = () => {
-        if (running || reducedMotion) {
+      const parallaxEnabled = !reducedMotion && !root.classList.contains('is-lite');
+
+      const wake = () => {
+        // Don't drive the parallax loop when disabled, or while the hero is
+        // scrolled out of view — the scene is hidden behind page content then.
+        if (running || !parallaxEnabled || !heroVisible) {
           return;
         }
 
         running = true;
-        updateScroll();
         frameId = requestAnimationFrame(render);
       };
 
@@ -140,19 +233,38 @@ const { scene = '/scene.splinecode' } = Astro.props as Props;
         }
       };
 
-      window.addEventListener('scroll', updateScroll, { passive: true });
-      window.addEventListener('resize', updateScroll, { passive: true });
+      const updatePointer = (event: PointerEvent) => {
+        state.targetPointerX = clamp((event.clientX / Math.max(window.innerWidth, 1) - 0.5) * 2, -1, 1);
+        state.targetPointerY = clamp((event.clientY / Math.max(window.innerHeight, 1) - 0.5) * 2, -1, 1);
+        wake();
+      };
 
-      if (!reducedMotion) {
+      const updateScroll = () => {
+        state.targetScroll = clamp(window.scrollY / maxScroll, 0, 1);
+        wake();
+      };
+
+      const handleResize = () => {
+        mobile = mobileQuery.matches;
+        recalcMaxScroll();
+        updateScroll();
+      };
+
+      if (parallaxEnabled) {
+        window.addEventListener('scroll', updateScroll, { passive: true });
+        window.addEventListener('resize', handleResize, { passive: true });
+        window.addEventListener('load', recalcMaxScroll, { once: true });
+        mobileQuery.addEventListener('change', handleResize);
         window.addEventListener('pointermove', updatePointer, { passive: true });
         document.addEventListener('visibilitychange', () => {
           if (document.hidden) {
             stopRender();
           } else {
-            startRender();
+            wake();
           }
         });
-        startRender();
+        recalcMaxScroll();
+        updateScroll();
       }
     }
   }
@@ -165,13 +277,7 @@ const { scene = '/scene.splinecode' } = Astro.props as Props;
     z-index: 0;
     overflow: hidden;
     background: var(--color-primary);
-    pointer-events: auto;
-    opacity: 0;
-    transition: opacity 0.8s ease;
-  }
-
-  .spline-background.is-ready {
-    opacity: 1;
+    pointer-events: none;
   }
 
   .spline-background__stage {
@@ -190,7 +296,7 @@ const { scene = '/scene.splinecode' } = Astro.props as Props;
       rotateX(var(--spline-rotate-x))
       rotateY(var(--spline-rotate-y));
     transform-style: preserve-3d;
-    pointer-events: auto;
+    pointer-events: none;
     will-change: transform;
   }
 
@@ -201,10 +307,24 @@ const { scene = '/scene.splinecode' } = Astro.props as Props;
     cursor: grab;
     pointer-events: auto;
     touch-action: pan-y;
+    /* The gradient wash/shade below are always painted, so the 3D scene fades
+       in on top of them rather than the whole layer flashing from black. */
+    opacity: 0;
+    transition: opacity 0.8s ease;
+  }
+
+  .spline-background.is-ready .spline-background__canvas {
+    opacity: 1;
   }
 
   .spline-background__canvas:active {
     cursor: grabbing;
+  }
+
+  /* Lite mode (data-saver / slow / low-end devices): the scene never loads, so
+     drop the interactive canvas entirely and let the gradient stand in. */
+  .spline-background.is-lite .spline-background__canvas {
+    display: none;
   }
 
   .spline-background__wash,
@@ -227,8 +347,8 @@ const { scene = '/scene.splinecode' } = Astro.props as Props;
 
   @media (max-width: 900px) {
     .spline-background__stage {
-      width: max(148vw, 108vh);
-      height: max(148vw, 108vh);
+      width: max(136vw, 104vh);
+      height: max(136vw, 104vh);
       transform:
         translate3d(calc(-50% + 8vw + var(--spline-cursor-x)), calc(-50% - 8vh + var(--spline-cursor-y) + var(--spline-scroll-y)), 0)
         rotateX(var(--spline-rotate-x))
@@ -244,8 +364,8 @@ const { scene = '/scene.splinecode' } = Astro.props as Props;
 
   @media (max-width: 520px) {
     .spline-background__stage {
-      width: max(176vw, 100vh);
-      height: max(176vw, 100vh);
+      width: max(152vw, 96vh);
+      height: max(152vw, 96vh);
       transform:
         translate3d(calc(-50% + 3vw + var(--spline-cursor-x)), calc(-50% - 11vh + var(--spline-cursor-y) + var(--spline-scroll-y)), 0)
         rotateX(var(--spline-rotate-x))
