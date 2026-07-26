@@ -275,7 +275,9 @@ const { scene = '/scene.splinecode' } = Astro.props as Props;
     inset: 0;
     z-index: 0;
     overflow: hidden;
-    background: var(--color-primary);
+    background:
+      linear-gradient(135deg, #060712 0%, #071a1f 48%, #0a1c22 100%),
+      repeating-linear-gradient(90deg, rgba(56, 163, 165, 0.06) 0 1px, transparent 1px 4.5rem);
     pointer-events: none;
   }
 
@@ -336,8 +338,8 @@ const { scene = '/scene.splinecode' } = Astro.props as Props;
 
   .spline-background__wash {
     background:
-      linear-gradient(90deg, rgba(8, 10, 15, 0.94) 0%, rgba(8, 10, 15, 0.62) 38%, rgba(8, 10, 15, 0.18) 100%),
-      radial-gradient(circle at 50% 38%, rgba(125, 211, 252, 0.13), rgba(8, 10, 15, 0) 42%);
+      linear-gradient(90deg, rgba(6, 7, 18, 0.96) 0%, rgba(6, 7, 18, 0.72) 44%, rgba(6, 7, 18, 0.28) 100%),
+      linear-gradient(135deg, rgba(56, 163, 165, 0.12) 0%, rgba(56, 163, 165, 0) 38%, rgba(128, 237, 153, 0.08) 64%, rgba(87, 204, 153, 0.05) 100%);
   }
 
   .spline-background__shade {
@@ -356,8 +358,8 @@ const { scene = '/scene.splinecode' } = Astro.props as Props;
 
     .spline-background__wash {
       background:
-        linear-gradient(180deg, rgba(8, 10, 15, 0.24) 0%, rgba(8, 10, 15, 0.72) 56%, rgba(8, 10, 15, 0.96) 100%),
-        radial-gradient(circle at 50% 24%, rgba(125, 211, 252, 0.12), rgba(8, 10, 15, 0) 48%);
+        linear-gradient(180deg, rgba(6, 7, 18, 0.2) 0%, rgba(6, 7, 18, 0.72) 58%, rgba(6, 7, 18, 0.96) 100%),
+        linear-gradient(135deg, rgba(56, 163, 165, 0.1) 0%, rgba(56, 163, 165, 0) 44%, rgba(128, 237, 153, 0.07) 100%);
     }
   }
 

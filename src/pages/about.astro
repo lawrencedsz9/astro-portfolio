@@ -1,10 +1,10 @@
-﻿---
+---
 import Layout from '../layouts/Layout.astro';
 import Principles from '../components/Principles.astro';
 import { profile } from '../data.js';
 ---
 
-<Layout title={`About | ${profile.name}`} description={profile.metaDescription}>
+<Layout title={'About | ' + profile.name} description={profile.metaDescription}>
   <main class="page-shell">
     <Principles />
   </main>
@@ -12,7 +12,8 @@ import { profile } from '../data.js';
 
 <style>
   .page-shell {
-    padding-top: 4rem;
+    min-height: 100vh;
+    padding-top: 5.5rem;
     background: var(--color-primary);
   }
 </style>
