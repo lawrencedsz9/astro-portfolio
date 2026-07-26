@@ -1,0 +1,81 @@
+.logoloop {
+  --logoloop-gap: 0.85rem;
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  padding: 0.25rem 0 0.55rem;
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+
+.logoloop__track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+}
+
+.logoloop__list {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: var(--logoloop-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.logoloop__item {
+  --logo-color: var(--color-accent-cool);
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  padding: 0.7rem;
+  color: var(--color-text);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--logo-color) 12%, transparent), rgba(255, 255, 255, 0.025)),
+    rgba(255, 255, 255, 0.045);
+  border: 1px solid color-mix(in srgb, var(--logo-color) 28%, var(--color-border));
+  border-radius: var(--border-radius-md);
+  transition: transform var(--transition-normal), background var(--transition-normal), color var(--transition-normal), border-color var(--transition-normal);
+}
+
+.logoloop__item:nth-child(4n + 2) {
+  --logo-color: var(--color-accent-mint);
+}
+
+.logoloop__item:nth-child(4n + 3) {
+  --logo-color: var(--color-accent-coral);
+}
+
+.logoloop__item:nth-child(4n + 4) {
+  --logo-color: var(--color-accent-violet);
+}
+
+.logoloop__item:hover {
+  transform: translateY(-4px);
+  color: var(--logo-color);
+  border-color: color-mix(in srgb, var(--logo-color) 54%, var(--color-border));
+}
+
+.logoloop__node,
+.logoloop__node svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 520px) {
+  .logoloop__item {
+    width: 2.8rem;
+    height: 2.8rem;
+    padding: 0.62rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .logoloop__item {
+    transition: none;
+  }
+}
