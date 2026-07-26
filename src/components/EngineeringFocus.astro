@@ -1,0 +1,346 @@
+---
+// Horizontal carousel of specialisation cards. Native scroll-snap handles
+// touch swipe; a small script adds mouse drag, wheel, and arrow navigation.
+// 3 cards on desktop, 2 on tablet, 1 on mobile (set via CSS flex-basis).
+const cards = [
+  {
+    title: 'Backend Systems',
+    desc: 'Building scalable APIs, authentication, async services and database architectures.',
+    tech: ['Python', 'FastAPI', 'PostgreSQL', 'MongoDB', 'WebSockets'],
+  },
+  {
+    title: 'AI Engineering',
+    desc: 'Building LLM-powered applications, agentic workflows, RAG, tool calling and automation.',
+    tech: ['OpenAI GPT', 'Claude', 'Gemini', 'LangGraph', 'LiveKit', 'MCP'],
+  },
+  {
+    title: 'Computer Vision',
+    desc: 'Detection, facial recognition, embeddings and image retrieval.',
+    tech: ['OpenCV', 'YOLO', 'Dlib', 'NumPy'],
+  },
+  {
+    title: 'Realtime Systems',
+    desc: 'Event-driven applications and realtime communication.',
+    tech: ['WebSockets', 'WebRTC', 'LiveKit'],
+  },
+  {
+    title: 'Data Engineering',
+    desc: 'Data processing, validation and storage for AI applications.',
+    tech: ['PostgreSQL', 'MongoDB', 'SQLite', 'ETL'],
+  },
+  {
+    title: 'Infrastructure',
+    desc: 'Deployment, containers and production environments.',
+    tech: ['Docker', 'Git', 'Linux', 'Raspberry Pi'],
+  },
+];
+
+const tones = ['mint', 'cool', 'coral', 'violet'];
+---
+
+<section class="ef-section section-shell" id="focus">
+  <div class="container">
+    <header class="ef-head">
+      <div class="ef-head-copy">
+        <p class="eyebrow">Engineering Focus</p>
+        <h2>What I specialise in</h2>
+      </div>
+
+      <div class="ef-controls">
+        <button class="ef-arrow" type="button" data-ef-prev aria-label="Previous cards">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="M15 5 8 12l7 7"/></svg>
+        </button>
+        <button class="ef-arrow" type="button" data-ef-next aria-label="Next cards">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="m9 5 7 7-7 7"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="ef-viewport" data-ef-viewport role="list">
+      {cards.map((card, index) => (
+        <article class={'ef-card tone-' + tones[index % tones.length]} role="listitem">
+          <span class="ef-index">{String(index + 1).padStart(2, '0')}</span>
+          <h3>{card.title}</h3>
+          <p>{card.desc}</p>
+          <div class="ef-chips" aria-label={'Technologies for ' + card.title}>
+            {card.tech.map((tech) => <span>{tech}</span>)}
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  const viewport = document.querySelector('[data-ef-viewport]');
+  const prevBtn = document.querySelector('[data-ef-prev]');
+  const nextBtn = document.querySelector('[data-ef-next]');
+
+  if (viewport instanceof HTMLElement) {
+    // One "page" of scroll = card width + gap.
+    const step = () => {
+      const card = viewport.querySelector('.ef-card');
+      const gap = parseFloat(getComputedStyle(viewport).columnGap) || 0;
+      const width = card instanceof HTMLElement ? card.getBoundingClientRect().width : viewport.clientWidth;
+      return width + gap;
+    };
+
+    const updateArrows = () => {
+      const max = viewport.scrollWidth - viewport.clientWidth;
+      if (prevBtn instanceof HTMLButtonElement) prevBtn.disabled = viewport.scrollLeft <= 1;
+      if (nextBtn instanceof HTMLButtonElement) nextBtn.disabled = viewport.scrollLeft >= max - 1;
+    };
+
+    prevBtn?.addEventListener('click', () => viewport.scrollBy({ left: -step(), behavior: 'smooth' }));
+    nextBtn?.addEventListener('click', () => viewport.scrollBy({ left: step(), behavior: 'smooth' }));
+
+    viewport.addEventListener('scroll', updateArrows, { passive: true });
+    window.addEventListener('resize', updateArrows);
+
+    // Wheel scrolls the carousel horizontally, but releases at the edges so
+    // the page keeps scrolling normally instead of getting trapped.
+    viewport.addEventListener(
+      'wheel',
+      (event) => {
+        const delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
+        if (delta === 0) return;
+        const max = viewport.scrollWidth - viewport.clientWidth;
+        const atStart = viewport.scrollLeft <= 0;
+        const atEnd = viewport.scrollLeft >= max - 1;
+        if ((delta < 0 && atStart) || (delta > 0 && atEnd)) return;
+        event.preventDefault();
+        viewport.scrollLeft += delta;
+      },
+      { passive: false },
+    );
+
+    // Mouse / pen drag. Touch is left to native scroll-snap (free swipe).
+    let dragging = false;
+    let startX = 0;
+    let startScroll = 0;
+    let moved = false;
+
+    viewport.addEventListener('pointerdown', (event) => {
+      if (event.pointerType === 'touch') return;
+      if (event.pointerType === 'mouse' && event.button !== 0) return;
+      dragging = true;
+      moved = false;
+      startX = event.clientX;
+      startScroll = viewport.scrollLeft;
+      viewport.classList.add('is-dragging');
+      viewport.setPointerCapture(event.pointerId);
+    });
+
+    viewport.addEventListener('pointermove', (event) => {
+      if (!dragging) return;
+      const dx = event.clientX - startX;
+      if (Math.abs(dx) > 4) moved = true;
+      viewport.scrollLeft = startScroll - dx;
+    });
+
+    const endDrag = () => {
+      if (!dragging) return;
+      dragging = false;
+      viewport.classList.remove('is-dragging');
+    };
+
+    viewport.addEventListener('pointerup', endDrag);
+    viewport.addEventListener('pointercancel', endDrag);
+
+    // Swallow the click that ends a drag so it doesn't select text / feel jumpy.
+    viewport.addEventListener(
+      'click',
+      (event) => {
+        if (moved) {
+          event.preventDefault();
+          event.stopPropagation();
+          moved = false;
+        }
+      },
+      true,
+    );
+
+    updateArrows();
+  }
+</script>
+
+<style>
+  .ef-section {
+    background:
+      linear-gradient(180deg, rgba(6, 7, 18, 0.4) 0%, rgba(6, 7, 18, 0.92) 18%, rgba(6, 7, 18, 0.97) 100%);
+  }
+
+  .ef-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: 2.4rem;
+  }
+
+  .ef-head-copy h2 {
+    margin-top: 0.25rem;
+    font-size: clamp(2.1rem, 4vw, 3rem);
+  }
+
+  .ef-controls {
+    display: flex;
+    gap: 0.6rem;
+    flex: 0 0 auto;
+  }
+
+  .ef-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border: 1px solid var(--color-border);
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--color-text);
+    cursor: pointer;
+    transition: transform var(--transition-normal), border-color var(--transition-normal), background var(--transition-normal), opacity var(--transition-normal);
+  }
+
+  .ef-arrow svg {
+    width: 1.15rem;
+    height: 1.15rem;
+  }
+
+  .ef-arrow:hover:not(:disabled),
+  .ef-arrow:focus-visible:not(:disabled) {
+    transform: translateY(-2px);
+    border-color: var(--color-accent-mint);
+    background: rgba(128, 237, 153, 0.1);
+    color: var(--color-accent-mint);
+  }
+
+  .ef-arrow:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  /* --- Carousel track --- */
+  .ef-viewport {
+    --ef-gap: 1.25rem;
+    display: flex;
+    gap: var(--ef-gap);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    padding-bottom: 0.5rem;
+    cursor: grab;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .ef-viewport::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ef-viewport.is-dragging {
+    cursor: grabbing;
+    scroll-behavior: auto;
+    user-select: none;
+  }
+
+  .ef-card {
+    --tone: var(--color-accent-mint);
+    flex: 0 0 calc((100% - 2 * var(--ef-gap)) / 3);
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-height: 15.5rem;
+    padding: 1.6rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--tone) 7%, transparent), rgba(255, 255, 255, 0.015)),
+      rgba(13, 14, 26, 0.72);
+    transition: transform var(--transition-normal), border-color var(--transition-normal), box-shadow var(--transition-normal);
+  }
+
+  .ef-card:hover {
+    transform: translateY(-6px);
+    border-color: color-mix(in srgb, var(--tone) 50%, var(--color-border));
+    box-shadow: 0 0 30px color-mix(in srgb, var(--tone) 16%, transparent);
+  }
+
+  .tone-cool {
+    --tone: var(--color-accent-cool);
+  }
+
+  .tone-coral {
+    --tone: var(--color-accent-coral);
+  }
+
+  .tone-violet {
+    --tone: var(--color-accent-violet);
+  }
+
+  .ef-index {
+    color: var(--tone);
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+  }
+
+  .ef-card h3 {
+    font-size: 1.3rem;
+  }
+
+  .ef-card p {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: 0.94rem;
+    line-height: 1.6;
+  }
+
+  .ef-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: auto;
+    padding-top: 0.4rem;
+  }
+
+  .ef-chips span {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.28rem 0.55rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--border-radius-sm);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--color-text-muted);
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 0.72rem;
+    font-weight: 700;
+  }
+
+  /* Tablet: 2 cards */
+  @media (max-width: 900px) {
+    .ef-card {
+      flex-basis: calc((100% - var(--ef-gap)) / 2);
+    }
+  }
+
+  /* Mobile: 1 card */
+  @media (max-width: 560px) {
+    .ef-head {
+      align-items: center;
+    }
+
+    .ef-card {
+      flex-basis: 100%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ef-viewport {
+      scroll-behavior: auto;
+    }
+  }
+</style>

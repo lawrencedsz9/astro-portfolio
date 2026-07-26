@@ -1,0 +1,334 @@
+---
+import { profile } from '../data.js';
+
+const phrases = [
+  'backend systems.',
+  'agentic AI assistants.',
+  'computer vision pipelines.',
+  'realtime products.',
+];
+
+const features = [
+  { index: '01', label: 'Backend APIs', text: 'FastAPI services, async Python, SQL' },
+  { index: '02', label: 'Agentic AI', text: 'Voice agents, RAG, tool calling' },
+  { index: '03', label: 'Computer Vision', text: 'OpenCV pipelines, embedding search' },
+];
+---
+
+<section class="game-landing" id="home">
+  <div class="hud hud-tr" aria-hidden="true">
+    <span>SYS // PORTFOLIO_V2</span>
+    <span>LOC // 25.28N 51.53E — DOHA</span>
+    <span>STATUS // OPEN_TO_WORK</span>
+  </div>
+
+  <div class="hud hud-bl" aria-hidden="true">
+    <span>GRID // ONLINE</span>
+    <span>XP // <span data-xp-readout>0000</span></span>
+    <span class="hud-hint">CLICK THE GRID TO PULSE</span>
+  </div>
+
+  <div class="container landing-inner">
+    <p class="hero-eyebrow rise" style="--d: 0.05s">
+      <span class="dot"></span>
+      {profile.role}
+    </p>
+
+    <h1 class="rise" style="--d: 0.16s">
+      {profile.hero.heading}
+      <span class="type-line">
+        builds <span class="text-gradient" data-typewriter data-phrases={JSON.stringify(phrases)}>{phrases[0]}</span><span class="caret" aria-hidden="true"></span>
+      </span>
+    </h1>
+
+    <p class="subtitle rise" style="--d: 0.28s">{profile.hero.text}</p>
+
+    <div class="cta-row rise" style="--d: 0.4s">
+      <a class="btn btn-primary" href="#projects">View projects <span aria-hidden="true">-&gt;</span></a>
+      <a class="btn btn-outline" href={'mailto:' + profile.email}>Start a conversation</a>
+    </div>
+
+    <div class="feature-strip rise" style="--d: 0.52s" aria-label="Core focus areas">
+      {features.map((f) => (
+        <div class="feature">
+          <span class="feature-label"><em>{f.index}</em> {f.label}</span>
+          <span class="feature-text">{f.text}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+  // Entrance animations only run once this class lands. If this script never
+  // executes, no class is added and everything renders fully visible.
+  requestAnimationFrame(() => document.documentElement.classList.add('motion-ready'));
+</script>
+
+<script>
+  const el = document.querySelector('[data-typewriter]');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (el instanceof HTMLElement && !reducedMotion) {
+    const phrases: string[] = JSON.parse(el.dataset.phrases || '[]');
+
+    if (phrases.length > 1) {
+      let phraseIndex = 0;
+      let charIndex = phrases[0].length;
+      let deleting = true;
+
+      const tick = () => {
+        const phrase = phrases[phraseIndex];
+
+        if (deleting) {
+          charIndex -= 1;
+          el.textContent = phrase.slice(0, charIndex);
+          if (charIndex === 0) {
+            deleting = false;
+            phraseIndex = (phraseIndex + 1) % phrases.length;
+            window.setTimeout(tick, 420);
+            return;
+          }
+          window.setTimeout(tick, 34);
+        } else {
+          charIndex += 1;
+          el.textContent = phrases[phraseIndex].slice(0, charIndex);
+          if (charIndex === phrases[phraseIndex].length) {
+            deleting = true;
+            window.setTimeout(tick, 2100);
+            return;
+          }
+          window.setTimeout(tick, 62);
+        }
+      };
+
+      window.setTimeout(tick, 2400);
+    }
+  }
+
+  const xpReadout = document.querySelector('[data-xp-readout]');
+  if (xpReadout instanceof HTMLElement) {
+    window.addEventListener('boxes:xp', (e) => {
+      const total = (e as CustomEvent<number>).detail;
+      xpReadout.textContent = String(Math.min(total, 9999)).padStart(4, '0');
+    });
+  }
+</script>
+
+<style>
+  .game-landing {
+    position: relative;
+    z-index: 1;
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    padding: 8.5rem 0 4.5rem;
+  }
+
+  /* --- Corner HUD readouts --- */
+  .hud {
+    position: absolute;
+    z-index: 2;
+    display: grid;
+    gap: 0.3rem;
+    color: var(--color-text-muted);
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    pointer-events: none;
+  }
+
+  .hud-tr {
+    top: 6.2rem;
+    right: 2rem;
+    text-align: right;
+  }
+
+  .hud-bl {
+    bottom: 2rem;
+    left: 2rem;
+  }
+
+  .hud-hint {
+    color: var(--color-accent-mint);
+    opacity: 0.75;
+  }
+
+  [data-xp-readout] {
+    color: var(--color-accent-mint);
+  }
+
+  /* --- Hero copy --- */
+  .landing-inner {
+    display: grid;
+    justify-items: center;
+    gap: 1.4rem;
+    text-align: center;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin: 0;
+    padding: 0.45rem 0.95rem;
+    border: 1px solid rgba(128, 237, 153, 0.28);
+    border-radius: 9999px;
+    background: rgba(128, 237, 153, 0.07);
+    color: var(--color-accent-mint);
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+
+  .dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--color-accent-mint);
+    box-shadow: 0 0 12px rgba(128, 237, 153, 0.8);
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.45;
+      transform: scale(0.78);
+    }
+  }
+
+  h1 {
+    max-width: 17ch;
+    font-size: clamp(2.9rem, 7.2vw, 5.4rem);
+    line-height: 1.04;
+  }
+
+  .type-line {
+    display: block;
+    white-space: nowrap;
+  }
+
+  .caret {
+    display: inline-block;
+    width: 3px;
+    height: 0.82em;
+    margin-left: 0.12em;
+    vertical-align: -0.08em;
+    background: var(--color-accent-mint);
+    animation: blink 1s steps(1) infinite;
+  }
+
+  @keyframes blink {
+    50% {
+      opacity: 0;
+    }
+  }
+
+  .subtitle {
+    max-width: 620px;
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: 1.08rem;
+    line-height: 1.7;
+  }
+
+  .cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+  }
+
+  /* --- Feature strip --- */
+  .feature-strip {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1px;
+    width: min(100%, 760px);
+    margin-top: 2.2rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    background: var(--color-border);
+    overflow: hidden;
+  }
+
+  .feature {
+    display: grid;
+    gap: 0.3rem;
+    padding: 1rem 1.1rem;
+    background: rgba(10, 12, 24, 0.82);
+    text-align: left;
+  }
+
+  .feature-label {
+    color: var(--color-text);
+    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .feature-label em {
+    margin-right: 0.35rem;
+    color: var(--color-accent-mint);
+    font-style: normal;
+  }
+
+  .feature-text {
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    line-height: 1.5;
+  }
+
+  /* --- Entrance animation, gated behind .motion-ready ---
+     Default state is fully visible; if JS never runs, nothing stays hidden. */
+  .rise {
+    opacity: 1;
+    transform: none;
+  }
+
+  :global(html.motion-ready) .rise {
+    animation: riseIn 0.85s cubic-bezier(0.22, 0.65, 0.3, 1) both;
+    animation-delay: var(--d, 0s);
+  }
+
+  @keyframes riseIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .hud {
+      display: none;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .game-landing {
+      padding-top: 7rem;
+    }
+
+    .type-line {
+      white-space: normal;
+    }
+
+    .feature-strip {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
