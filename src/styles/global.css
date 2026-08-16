@@ -1,18 +1,20 @@
 :root {
-  --color-primary: #050506;
-  --color-secondary: #09090b;
-  --color-tertiary: #111115;
-  --color-panel: rgba(16, 16, 20, 0.82);
-  --color-panel-strong: #101014;
-  --color-border: rgba(255, 255, 255, 0.1);
-  --color-border-strong: rgba(255, 255, 255, 0.22);
-  --color-text: #f2f3ef;
-  --color-text-muted: #92959d;
-  --color-accent: #68d7ff;
-  --color-accent-dark: #2398c3;
-  --color-accent-soft: rgba(104, 215, 255, 0.16);
-  --color-signal: #f1d84b;
-  --color-signal-soft: rgba(241, 216, 75, 0.14);
+  --color-primary: #0d0d0d;
+  --color-secondary: #101010;
+  --color-tertiary: #000000;
+  --color-panel: rgba(18, 18, 18, 0.86);
+  --color-panel-strong: #121212;
+  --color-border: rgba(255, 255, 255, 0.12);
+  --color-border-strong: rgba(255, 255, 255, 0.28);
+  --color-text: #ffffff;
+  --color-text-muted: #a7abb3;
+  --color-accent: #1e90ff;
+  --color-accent-dark: #0f6ed1;
+  --color-accent-soft: rgba(30, 144, 255, 0.16);
+  --color-signal: #ff0099;
+  --color-signal-soft: rgba(255, 0, 153, 0.14);
+  --color-shade: #00ff85;
+  --color-shade-soft: rgba(0, 255, 133, 0.1);
   --shadow-sm: 0 12px 32px rgba(0, 0, 0, 0.34);
   --shadow-md: 0 30px 90px rgba(0, 0, 0, 0.5);
   --border-radius-sm: 7px;
@@ -49,8 +51,8 @@ body {
   line-height: 1.6;
   color: var(--color-text);
   background:
-    radial-gradient(circle at 75% 26%, rgba(104, 215, 255, 0.05), transparent 28rem),
-    radial-gradient(circle at 18% 62%, rgba(241, 216, 75, 0.035), transparent 26rem),
+    radial-gradient(circle at 75% 26%, rgba(30, 144, 255, 0.06), transparent 28rem),
+    radial-gradient(circle at 18% 62%, rgba(0, 255, 133, 0.035), transparent 26rem),
     var(--color-primary);
   text-rendering: optimizeLegibility;
 }
@@ -108,8 +110,8 @@ img {
 }
 
 ::selection {
-  background: var(--color-accent);
-  color: #050506;
+  background: var(--color-signal);
+  color: var(--color-text);
 }
 
 :focus-visible {
@@ -164,13 +166,14 @@ img {
 .btn-primary {
   border-color: var(--color-accent);
   background: var(--color-accent);
-  color: #050506;
+  color: var(--color-primary);
 }
 
 .btn-primary:hover,
 .btn-primary:focus-visible {
   border-color: var(--color-signal);
   background: var(--color-signal);
+  color: var(--color-text);
 }
 
 .visually-hidden {

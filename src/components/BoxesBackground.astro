@@ -67,10 +67,10 @@
             context.lineWidth = lineWidth;
             context.lineCap = 'round';
             context.strokeStyle = hover > 0.55
-              ? `rgba(241, 216, 75, ${0.22 + intensity * 0.72})`
-              : `rgba(104, 215, 255, ${0.07 + intensity * 0.58})`;
+              ? `rgba(255, 0, 153, ${0.22 + intensity * 0.72})`
+              : `rgba(30, 144, 255, ${0.07 + intensity * 0.58})`;
             context.shadowBlur = intensity * 18;
-            context.shadowColor = hover > 0.55 ? '#f1d84b' : '#68d7ff';
+            context.shadowColor = hover > 0.55 ? '#ff0099' : '#1e90ff';
             context.stroke();
           }
         }
@@ -115,8 +115,9 @@
     inset: 0;
     overflow: hidden;
     background:
-      radial-gradient(circle at 68% 52%, rgba(104, 215, 255, 0.08), transparent 22rem),
-      #050506;
+      radial-gradient(circle at 68% 52%, rgba(30, 144, 255, 0.1), transparent 22rem),
+      radial-gradient(circle at 42% 68%, rgba(0, 255, 133, 0.035), transparent 20rem),
+      var(--color-primary);
     pointer-events: none;
   }
 
@@ -129,7 +130,7 @@
     position: absolute;
     inset: 0;
     background:
-      linear-gradient(90deg, rgba(5, 5, 6, 0.96) 0%, rgba(5, 5, 6, 0.62) 36%, rgba(5, 5, 6, 0.1) 68%, rgba(5, 5, 6, 0.7) 100%),
-      linear-gradient(180deg, rgba(5, 5, 6, 0.16), rgba(5, 5, 6, 0.92) 100%);
+      linear-gradient(90deg, rgba(13, 13, 13, 0.96) 0%, rgba(13, 13, 13, 0.62) 36%, rgba(13, 13, 13, 0.1) 68%, rgba(13, 13, 13, 0.7) 100%),
+      linear-gradient(180deg, rgba(13, 13, 13, 0.16), rgba(13, 13, 13, 0.92) 100%);
   }
 </style>

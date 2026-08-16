@@ -7,7 +7,7 @@ const currentYear = new Date().getFullYear();
 <footer class="footer">
   <div class="container footer-inner">
     <p>© {currentYear} {profile.displayName}</p>
-    <p>Designed and built in Doha.</p>
+    <p>Designed and built.</p>
     <a href="/#home">Back to top ↑</a>
   </div>
 </footer>
@@ -17,7 +17,7 @@ const currentYear = new Date().getFullYear();
     padding: 1.4rem 0;
     border-top: 1px solid var(--color-border);
     background: var(--color-tertiary);
-    color: var(--color-text-muted);
+    color: var(--color-text);
   }
 
   .footer-inner {
@@ -33,6 +33,12 @@ const currentYear = new Date().getFullYear();
   }
 
   .footer a {
+    color: var(--color-text);
+    transition: color var(--transition-fast);
+  }
+
+  .footer a:hover,
+  .footer a:focus-visible {
     color: var(--color-accent);
   }
 
