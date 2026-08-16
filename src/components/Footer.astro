@@ -6,162 +6,40 @@ const currentYear = new Date().getFullYear();
 
 <footer class="footer">
   <div class="container footer-inner">
-    <div class="footer-top">
-      <div class="footer-brand-block">
-        <a class="footer-brand" href="/#home">{profile.displayName}</a>
-        <p class="footer-tagline">{profile.role}</p>
-        <a class="footer-email" href={'mailto:' + profile.email}>{profile.email}</a>
-      </div>
-
-      <div class="footer-cols">
-        <nav class="footer-col" aria-label="Footer navigation">
-          <a href="/#home">Home</a>
-          <a href="/#focus">About</a>
-          <a href="/#projects">Projects</a>
-          <a href="/#contact">Contact</a>
-        </nav>
-
-        <div class="footer-col" aria-label="Social links">
-          <p class="footer-col-title">Connect</p>
-          <a href={profile.github} target="_blank" rel="noopener noreferrer">GitHub</a>
-          <a href={profile.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>
-          <a href={profile.twitter} target="_blank" rel="noopener noreferrer">X / Twitter</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="footer-bottom">
-      <p class="copyright">© {currentYear} {profile.name}.</p>
-      <a class="back-to-top" href="/#home">Back to top ↑</a>
-    </div>
+    <p>© {currentYear} {profile.displayName}</p>
+    <p>Designed and built in Doha.</p>
+    <a href="/#home">Back to top ↑</a>
   </div>
 </footer>
 
 <style>
   .footer {
-    position: relative;
-    z-index: 10;
-    padding: 3rem 0 2rem;
+    padding: 1.4rem 0;
     border-top: 1px solid var(--color-border);
-    background: rgba(6, 7, 18, 0.96);
-  }
-
-  .footer::before {
-    content: '';
-    position: absolute;
-    top: -1px;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--color-accent-cool), var(--color-accent-mint), transparent);
-    opacity: 0.5;
-  }
-
-  .footer-top {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 2.5rem;
-    align-items: start;
-    padding-bottom: 2rem;
-  }
-
-  .footer-brand {
-    display: inline-flex;
-    color: var(--color-text);
-    font-family: 'Space Grotesk', 'Inter', sans-serif;
-    font-size: 1.4rem;
-    font-weight: 800;
-  }
-
-  .footer-tagline {
-    max-width: 380px;
-    margin: 0.5rem 0 0.85rem;
+    background: var(--color-tertiary);
     color: var(--color-text-muted);
-    font-size: 0.92rem;
-    line-height: 1.55;
   }
 
-  .footer-email {
-    color: var(--color-accent-mint);
-    font-size: 0.92rem;
-    font-weight: 700;
-  }
-
-  .footer-email:hover,
-  .footer-email:focus-visible {
-    text-decoration: underline;
-  }
-
-  .footer-cols {
+  .footer-inner {
     display: flex;
-    gap: 3.5rem;
-  }
-
-  .footer-col {
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-  }
-
-  .footer-col-title {
-    margin: 0 0 0.7rem;
-    color: var(--color-text);
-    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-    font-size: 0.74rem;
-    font-weight: 800;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .footer-col a {
-    display: inline-flex;
     align-items: center;
-    min-height: 2rem;
-    color: var(--color-text-muted);
-    font-size: 0.9rem;
-    font-weight: 600;
-  }
-
-  .footer-col a:hover,
-  .footer-col a:focus-visible {
-    color: var(--color-text);
-  }
-
-  .footer-bottom {
-    display: flex;
-    flex-wrap: wrap;
     justify-content: space-between;
-    align-items: center;
     gap: 1rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--color-border);
+    font-size: 0.75rem;
   }
 
-  .copyright {
+  .footer p {
     margin: 0;
-    color: var(--color-text-muted);
-    font-size: 0.84rem;
   }
 
-  .back-to-top {
-    color: var(--color-text-muted);
-    font-size: 0.84rem;
-    font-weight: 700;
+  .footer a {
+    color: var(--color-accent);
   }
 
-  .back-to-top:hover,
-  .back-to-top:focus-visible {
-    color: var(--color-accent-cool);
-  }
-
-  @media (max-width: 720px) {
-    .footer-top {
-      grid-template-columns: 1fr;
-      gap: 2rem;
-    }
-
-    .footer-cols {
-      gap: 2.5rem;
+  @media (max-width: 600px) {
+    .footer-inner {
+      align-items: flex-start;
+      flex-direction: column;
     }
   }
 </style>

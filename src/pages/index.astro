@@ -1,6 +1,5 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import BoxesBackground from '../components/BoxesBackground.astro';
 import GameLanding from '../components/GameLanding.astro';
 import EngineeringFocus from '../components/EngineeringFocus.astro';
 import Projects from '../components/Projects.astro';
@@ -9,8 +8,6 @@ import { profile } from '../data.js';
 ---
 
 <Layout title={`${profile.name} | ${profile.role}`} description={profile.metaDescription}>
-  <BoxesBackground />
-
   <GameLanding />
 
   <EngineeringFocus />

@@ -1,188 +1,135 @@
----
-// Lightweight interactive grid background. A single 2D canvas replaces the
-// old Spline WebGL scene: hovering lights up cells, clicking fires a ripple,
-// and each newly lit cell earns "XP" broadcast via a `boxes:xp` event.
-// The rAF loop only runs while something is fading — idle cost is zero.
----
-
-<div class="boxes-bg" aria-hidden="true" data-boxes-bg>
-  <canvas data-boxes-canvas></canvas>
-  <div class="boxes-shade"></div>
+<div class="hover-field" aria-hidden="true" data-hover-field>
+  <canvas></canvas>
+  <div class="field-vignette"></div>
 </div>
 
 <script>
-  const root = document.querySelector('[data-boxes-bg]');
-  const canvas = root?.querySelector('[data-boxes-canvas]');
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const field = document.querySelector('[data-hover-field]');
+  const canvas = field?.querySelector('canvas');
 
-  if (canvas instanceof HTMLCanvasElement && !reducedMotion) {
-    const ctx = canvas.getContext('2d');
+  if (field instanceof HTMLElement && canvas instanceof HTMLCanvasElement) {
+    const context = canvas.getContext('2d');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    if (ctx) {
-      const CELL = 46;
-      const PALETTE = ['#80ed99', '#38a3a5', '#57cc99', '#c7f9cc'];
+    if (context) {
+      let width = 0;
+      let height = 0;
+      let running = true;
+      let pointerX = -1000;
+      let pointerY = -1000;
+      let targetX = -1000;
+      let targetY = -1000;
+      let frameId = 0;
       const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
 
-      let cols = 0;
-      let rows = 0;
-      let intensity = new Float32Array(0);
-      let tone = new Uint8Array(0);
-      let ripples: { x: number; y: number; r: number }[] = [];
-      let running = false;
-      let xp = 0;
-      let lastSentXp = -1;
-
       const resize = () => {
-        cols = Math.ceil(window.innerWidth / CELL) + 1;
-        rows = Math.ceil(window.innerHeight / CELL) + 1;
-        intensity = new Float32Array(cols * rows);
-        tone = new Uint8Array(cols * rows);
-        canvas.width = Math.round(window.innerWidth * dpr);
-        canvas.height = Math.round(window.innerHeight * dpr);
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        const rect = field.getBoundingClientRect();
+        width = Math.max(1, rect.width);
+        height = Math.max(1, rect.height);
+        canvas.width = Math.round(width * dpr);
+        canvas.height = Math.round(height * dpr);
+        canvas.style.width = `${width}px`;
+        canvas.style.height = `${height}px`;
+        context.setTransform(dpr, 0, 0, dpr, 0, 0);
+        if (reducedMotion) draw(0);
       };
 
-      const light = (col: number, row: number, boost: number) => {
-        if (col < 0 || row < 0 || col >= cols || row >= rows) return;
-        const i = row * cols + col;
-        if (intensity[i] < 0.4 && boost >= 0.4) {
-          xp += 1;
-          tone[i] = (Math.random() * PALETTE.length) | 0;
-        }
-        if (boost > intensity[i]) intensity[i] = boost;
-      };
+      const draw = (time: number) => {
+        context.clearRect(0, 0, width, height);
+        pointerX += (targetX - pointerX) * 0.1;
+        pointerY += (targetY - pointerY) * 0.1;
 
-      const wake = () => {
-        if (!running) {
-          running = true;
-          requestAnimationFrame(frame);
-        }
-      };
+        const columns = Math.max(24, Math.round(width / 42));
+        const rows = 22;
+        const horizon = height * 0.06;
+        const cursorRadius = Math.max(110, width * 0.13);
 
-      const frame = () => {
-        ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-        let anyActive = false;
+        for (let row = 0; row < rows; row += 1) {
+          const depth = row / (rows - 1);
+          const perspective = 0.44 + depth * 0.82;
+          const y = horizon + Math.pow(depth, 1.65) * height * 0.9;
 
-        // Expand ripples and light the cells sitting on the wavefront.
-        for (const ripple of ripples) {
-          ripple.r += 16;
-          for (let row = 0; row < rows; row++) {
-            for (let col = 0; col < cols; col++) {
-              const dx = col * CELL + CELL / 2 - ripple.x;
-              const dy = row * CELL + CELL / 2 - ripple.y;
-              const dist = Math.sqrt(dx * dx + dy * dy);
-              if (dist <= ripple.r && dist > ripple.r - 20) light(col, row, 0.9);
-            }
+          for (let column = 0; column < columns; column += 1) {
+            const across = column / (columns - 1) - 0.5;
+            const x = width * 0.5 + across * width * perspective;
+            const dx = x - pointerX;
+            const dy = y - pointerY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            const hover = Math.max(0, 1 - distance / cursorRadius);
+            const ambient = reducedMotion ? 0 : (Math.sin(time * 0.0012 + column * 0.55 + row * 0.8) + 1) * 0.5;
+            const intensity = Math.min(1, hover * hover * 1.5 + ambient * 0.12);
+            const lineHeight = 2 + depth * 5 + intensity * 28;
+            const lineWidth = 0.7 + depth * 0.9 + hover * 1.2;
+
+            context.beginPath();
+            context.moveTo(x, y - lineHeight * 0.5);
+            context.lineTo(x, y + lineHeight * 0.5);
+            context.lineWidth = lineWidth;
+            context.lineCap = 'round';
+            context.strokeStyle = hover > 0.55
+              ? `rgba(241, 216, 75, ${0.22 + intensity * 0.72})`
+              : `rgba(104, 215, 255, ${0.07 + intensity * 0.58})`;
+            context.shadowBlur = intensity * 18;
+            context.shadowColor = hover > 0.55 ? '#f1d84b' : '#68d7ff';
+            context.stroke();
           }
         }
-        const maxDim = Math.max(window.innerWidth, window.innerHeight) * 1.3;
-        ripples = ripples.filter((r) => r.r < maxDim);
 
-        for (let row = 0; row < rows; row++) {
-          for (let col = 0; col < cols; col++) {
-            const i = row * cols + col;
-            const a = intensity[i];
-            if (a < 0.03) continue;
-            anyActive = true;
-            const x = col * CELL;
-            const y = row * CELL;
-            const color = PALETTE[tone[i]];
-            ctx.globalAlpha = a * 0.13;
-            ctx.fillStyle = color;
-            ctx.fillRect(x + 1, y + 1, CELL - 2, CELL - 2);
-            ctx.globalAlpha = a * 0.8;
-            ctx.strokeStyle = color;
-            ctx.strokeRect(x + 0.5, y + 0.5, CELL - 1, CELL - 1);
-            intensity[i] = a * 0.93;
-          }
-        }
-        ctx.globalAlpha = 1;
-
-        if (xp !== lastSentXp) {
-          lastSentXp = xp;
-          window.dispatchEvent(new CustomEvent('boxes:xp', { detail: xp }));
-        }
-
-        if (anyActive || ripples.length) {
-          requestAnimationFrame(frame);
-        } else {
-          running = false;
-        }
+        context.shadowBlur = 0;
+        if (running && !reducedMotion) frameId = requestAnimationFrame(draw);
       };
 
-      // Only react while the hero is on screen — no point painting under
-      // the (opaque) sections further down the page.
-      const heroVisible = () => window.scrollY < window.innerHeight;
+      const parent = field.parentElement;
+      parent?.addEventListener('pointermove', (event) => {
+        const rect = field.getBoundingClientRect();
+        targetX = event.clientX - rect.left;
+        targetY = event.clientY - rect.top;
+      }, { passive: true });
 
-      window.addEventListener(
-        'pointermove',
-        (e) => {
-          if (!heroVisible()) return;
-          const col = (e.clientX / CELL) | 0;
-          const row = (e.clientY / CELL) | 0;
-          light(col, row, 1);
-          if (Math.random() < 0.45) {
-            light(col + ((Math.random() * 3) | 0) - 1, row + ((Math.random() * 3) | 0) - 1, 0.55);
-          }
-          wake();
-        },
-        { passive: true },
-      );
-
-      window.addEventListener('click', (e) => {
-        if (!heroVisible()) return;
-        const target = e.target;
-        if (target instanceof Element && target.closest('a, button, input, textarea, select, label')) return;
-        if (ripples.length >= 3) ripples.shift();
-        ripples.push({ x: e.clientX, y: e.clientY, r: 0 });
-        wake();
+      parent?.addEventListener('pointerleave', () => {
+        targetX = width * 0.68;
+        targetY = height * 0.52;
       });
 
-      document.addEventListener('visibilitychange', () => {
-        if (!document.hidden && !running) wake();
+      const observer = new IntersectionObserver(([entry]) => {
+        running = entry.isIntersecting;
+        if (running && !reducedMotion) {
+          cancelAnimationFrame(frameId);
+          frameId = requestAnimationFrame(draw);
+        }
       });
 
+      observer.observe(field);
       window.addEventListener('resize', resize);
       resize();
-
-      // Opening pulse so first-time visitors see the grid is alive.
-      window.setTimeout(() => {
-        ripples.push({ x: window.innerWidth * 0.5, y: window.innerHeight * 0.42, r: 0 });
-        wake();
-      }, 650);
+      targetX = width * 0.68;
+      targetY = height * 0.5;
+      if (!reducedMotion) frameId = requestAnimationFrame(draw);
     }
   }
 </script>
 
 <style>
-  .boxes-bg {
-    position: fixed;
+  .hover-field {
+    position: absolute;
     inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    /* Static grid lines drawn in CSS — the canvas only paints highlights. */
+    overflow: hidden;
     background:
-      linear-gradient(90deg, rgba(247, 248, 255, 0.045) 0 1px, transparent 1px 100%),
-      linear-gradient(180deg, rgba(247, 248, 255, 0.045) 0 1px, transparent 1px 100%);
-    background-size: 46px 46px;
+      radial-gradient(circle at 68% 52%, rgba(104, 215, 255, 0.08), transparent 22rem),
+      #050506;
+    pointer-events: none;
   }
 
-  .boxes-bg canvas {
+  .hover-field canvas {
     width: 100%;
     height: 100%;
   }
 
-  .boxes-shade {
+  .field-vignette {
     position: absolute;
     inset: 0;
     background:
-      radial-gradient(120% 90% at 50% 8%, transparent 40%, rgba(6, 7, 18, 0.55) 100%),
-      linear-gradient(180deg, transparent 55%, rgba(6, 7, 18, 0.9) 100%);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .boxes-bg canvas {
-      display: none;
-    }
+      linear-gradient(90deg, rgba(5, 5, 6, 0.96) 0%, rgba(5, 5, 6, 0.62) 36%, rgba(5, 5, 6, 0.1) 68%, rgba(5, 5, 6, 0.7) 100%),
+      linear-gradient(180deg, rgba(5, 5, 6, 0.16), rgba(5, 5, 6, 0.92) 100%);
   }
 </style>

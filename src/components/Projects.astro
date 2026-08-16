@@ -12,339 +12,356 @@ type Project = {
 };
 
 const typedProjects = projects as Project[];
-const tones = ['cool', 'mint', 'coral', 'violet'];
-
-// Turn a GitHub URL into a terminal-style path, e.g. ~/lawrencedsz9/WMS
-const repoPath = (link: string) => {
-  try {
-    const path = new URL(link).pathname.replace(/^\/+|\/+$/g, '');
-    return path ? '~/' + path : '~/projects';
-  } catch {
-    return '~/projects';
-  }
-};
+const featuredProjects = typedProjects.slice(0, 2);
+const otherProjects = typedProjects.slice(2);
 ---
 
 <section class="projects-section section-shell" id="projects">
   <div class="container">
     <header class="projects-head">
-      <p class="eyebrow">Selected Work</p>
-      <h2>Projects I've worked on</h2>
+      <p class="eyebrow">Selected work</p>
+      <h2>Products, systems, and experiments I have built.</h2>
+      <p>The interesting part is not the technology list. It is how the pieces were made to work together.</p>
     </header>
 
-    <div class="projects-grid" data-projects-grid>
-      {typedProjects.map((project, index) => {
-        const tone = tones[index % tones.length];
+    <div class="featured-projects">
+      {featuredProjects.map((project, index) => (
+        <article class="featured-project">
+          <p class="project-category">{project.category}</p>
+          <h3>{project.name}</h3>
+          <time>{project.period}</time>
+          <p class="project-description">{project.description}</p>
+          <p class="project-highlight">{project.highlight}</p>
 
-        return (
-          <a
-            class={'project-card tone-' + tone}
-            href={project.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={'Open ' + project.name + ' repository'}
-          >
-            <div class="pc-chrome">
-              <span class="pc-dots" aria-hidden="true">
-                <i></i><i></i><i></i>
-              </span>
-              <span class="pc-path">{repoPath(project.link)}</span>
+          <div class="featured-stack" aria-label={'Technology used for ' + project.name}>
+            {project.stack.map((technology) => <span>{technology}</span>)}
+          </div>
+
+          <a href={project.link} target="_blank" rel="noopener noreferrer">
+            Repository <span aria-hidden="true">→</span>
+          </a>
+        </article>
+      ))}
+    </div>
+
+    <div class="other-work">
+      <div class="other-work-heading">
+        <p class="eyebrow">Other work</p>
+        <p>Four more projects across computer vision, mobile, and product engineering.</p>
+      </div>
+
+      <div class="project-list">
+        {otherProjects.map((project, index) => (
+          <a class="project-row" href={project.link} target="_blank" rel="noopener noreferrer">
+            <span class="row-number">{String(index + 3).padStart(2, '0')}</span>
+            <div class="row-main">
+              <p>{project.category}</p>
+              <h3>{project.name}</h3>
+              <p class="row-description">{project.description}</p>
+              <p class="row-highlight">{project.highlight}</p>
             </div>
-
-            <div class="pc-body">
-              <div class="pc-top">
-                <span class="pc-category">{project.category}</span>
-                <span class="pc-period">{project.period}</span>
-              </div>
-
-              <h3 class="pc-title">{project.name}</h3>
-              <p class="pc-desc">{project.description}</p>
-
-              <div class="pc-tags" aria-label={'Tech stack for ' + project.name}>
-                {project.stack.map((tech) => <span>{tech}</span>)}
-              </div>
-
-              <span class="pc-link">
-                <span class="pc-prompt">&gt;</span> view repository <span aria-hidden="true">↗</span>
-              </span>
+            <div class="row-meta">
+              <span>{project.stack.join(' · ')}</span>
+              <strong aria-hidden="true">↗</strong>
             </div>
           </a>
-        );
-      })}
+        ))}
+      </div>
     </div>
   </div>
 </section>
 
-<script>
-  // Cursor-following glow: each card tracks the pointer via CSS custom props.
-  const grid = document.querySelector('[data-projects-grid]');
-
-  if (grid instanceof HTMLElement && window.matchMedia('(hover: hover)').matches) {
-    grid.addEventListener(
-      'pointermove',
-      (e) => {
-        const card = (e.target as Element).closest('.project-card');
-        if (card instanceof HTMLElement) {
-          const rect = card.getBoundingClientRect();
-          card.style.setProperty('--mx', `${e.clientX - rect.left}px`);
-          card.style.setProperty('--my', `${e.clientY - rect.top}px`);
-        }
-      },
-      { passive: true },
-    );
-  }
-</script>
-
 <style>
   .projects-section {
+    overflow: hidden;
     background:
-      linear-gradient(180deg, rgba(6, 7, 18, 0.94), rgba(10, 12, 20, 0.98)),
-      repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.03) 0 1px, transparent 1px 5rem);
+      radial-gradient(circle at 10% 24%, rgba(241, 216, 75, 0.04), transparent 26rem),
+      radial-gradient(circle at 88% 70%, rgba(104, 215, 255, 0.05), transparent 28rem),
+      var(--color-primary);
   }
 
   .projects-head {
-    max-width: 640px;
-    margin-bottom: 3rem;
+    display: grid;
+    grid-template-columns: minmax(110px, 0.3fr) minmax(0, 1.2fr) minmax(220px, 0.5fr);
+    gap: 2rem;
+    align-items: end;
+    padding-bottom: clamp(3rem, 7vw, 5.5rem);
   }
 
   .projects-head h2 {
-    margin-top: 0.25rem;
-    font-size: 3rem;
+    max-width: 760px;
+    font-size: clamp(3rem, 6.8vw, 6.2rem);
+    line-height: 0.92;
   }
 
-  .projects-grid {
+  .projects-head > p:last-child {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: 0.88rem;
+    line-height: 1.7;
+  }
+
+  .featured-projects {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    align-items: stretch;
-    column-gap: 1.5rem;
-    row-gap: 1.75rem;
+    gap: 1rem;
   }
 
-  /* --- Terminal window card --- */
-  .project-card {
-    --tone: var(--color-accent-cool);
+  .featured-project {
     position: relative;
     display: flex;
     flex-direction: column;
+    min-height: 31rem;
+    padding: clamp(1.5rem, 3vw, 2.25rem);
     border: 1px solid var(--color-border);
-    border-radius: var(--border-radius-md);
-    background: rgba(9, 11, 20, 0.85);
+    border-radius: 0 var(--border-radius-lg) var(--border-radius-lg) var(--border-radius-lg);
+    background:
+      radial-gradient(circle at 84% 10%, rgba(104, 215, 255, 0.07), transparent 15rem),
+      rgba(12, 12, 14, 0.96);
     overflow: hidden;
     transition: transform var(--transition-normal), border-color var(--transition-normal);
   }
 
-  /* Cursor-following glow layer */
-  .project-card::before {
+  .featured-project::after {
     content: '';
     position: absolute;
-    inset: 0;
-    z-index: 0;
-    opacity: 0;
-    background: radial-gradient(
-      240px circle at var(--mx, 50%) var(--my, 0%),
-      color-mix(in srgb, var(--tone) 18%, transparent),
-      transparent 70%
-    );
-    transition: opacity var(--transition-normal);
+    top: -8rem;
+    right: -7rem;
+    width: 20rem;
+    height: 20rem;
+    border-radius: 50%;
+    background: var(--color-accent);
+    filter: blur(110px);
+    opacity: 0.08;
     pointer-events: none;
   }
 
-  .project-card:hover,
-  .project-card:focus-visible {
-    transform: translateY(-4px);
-    border-color: color-mix(in srgb, var(--tone) 50%, var(--color-border));
+  .featured-project:nth-child(2)::after {
+    background: var(--color-signal);
   }
 
-  .project-card:hover::before,
-  .project-card:focus-visible::before {
-    opacity: 1;
+  .featured-project:hover,
+  .featured-project:focus-within {
+    transform: translateY(-5px);
+    border-color: rgba(104, 215, 255, 0.3);
   }
 
-  .tone-mint {
-    --tone: var(--color-accent-mint);
-  }
-
-  .tone-coral {
-    --tone: var(--color-accent-coral);
-  }
-
-  .tone-violet {
-    --tone: var(--color-accent-violet);
-  }
-
-  /* Window chrome bar */
-  .pc-chrome {
+  .project-category {
     position: relative;
     z-index: 1;
-    display: flex;
-    align-items: center;
-    gap: 0.7rem;
-    padding: 0.6rem 0.9rem;
-    border-bottom: 1px solid var(--color-border);
-    background: rgba(255, 255, 255, 0.02);
-  }
-
-  .pc-dots {
-    display: inline-flex;
-    gap: 0.4rem;
-    flex: 0 0 auto;
-  }
-
-  .pc-dots i {
-    width: 0.7rem;
-    height: 0.7rem;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.16);
-  }
-
-  .pc-dots i:nth-child(1) {
-    background: #ff5f57;
-  }
-
-  .pc-dots i:nth-child(2) {
-    background: #febc2e;
-  }
-
-  .pc-dots i:nth-child(3) {
-    background: #28c840;
-  }
-
-  .pc-path {
+    margin: 0 0 0.55rem;
     color: var(--color-text-muted);
-    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-    font-size: 0.78rem;
-    font-weight: 600;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .project-card:hover .pc-path,
-  .project-card:focus-visible .pc-path {
-    color: var(--tone);
-  }
-
-  /* Card body */
-  .pc-body {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 0.9rem;
-    flex: 1;
-    padding: 1.4rem;
-  }
-
-  .pc-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  .pc-category {
-    color: var(--tone);
-    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-    font-size: 0.72rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-  }
-
-  .pc-period {
-    flex: 0 0 auto;
-    padding: 0.3rem 0.65rem;
-    border-radius: 9999px;
-    background: rgba(255, 255, 255, 0.06);
-    color: var(--color-text-muted);
-    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
     font-size: 0.7rem;
-    font-weight: 700;
+    font-weight: 600;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
-    white-space: nowrap;
   }
 
-  .pc-title {
-    max-width: 22ch;
+  .featured-project:nth-child(1) .project-category,
+  .featured-project:nth-child(1) h3,
+  .featured-project:nth-child(1) > a {
+    color: var(--color-accent);
+  }
+
+  .featured-project:nth-child(2) .project-category,
+  .featured-project:nth-child(2) h3,
+  .featured-project:nth-child(2) > a {
+    color: var(--color-signal);
+  }
+
+  .featured-project h3 {
+    position: relative;
+    z-index: 1;
+    max-width: 18ch;
+    min-height: 2.05em;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 0.98;
+  }
+
+  .featured-project time {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: 100%;
+    margin: 1.5rem 0 0;
+    padding: 0.42rem 0.8rem;
+    border: 1px solid var(--color-border-strong);
+    border-radius: 999px;
+    color: var(--color-text-muted);
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  .project-description {
+    position: relative;
+    z-index: 1;
+    margin: 1.25rem 0 0;
     color: var(--color-text);
-    font-size: 1.5rem;
-    line-height: 1.18;
-    transition: color var(--transition-normal);
+    font-size: clamp(1rem, 1.7vw, 1.15rem);
+    line-height: 1.7;
   }
 
-  .project-card:hover .pc-title,
-  .project-card:focus-visible .pc-title {
-    color: var(--tone);
+  .project-highlight {
+    position: relative;
+    z-index: 1;
+    margin: 0.9rem 0 0;
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+    line-height: 1.7;
   }
 
-  .pc-desc {
+  .featured-stack {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-top: auto;
+    padding-top: 1.7rem;
+  }
+
+  .featured-stack span {
+    padding: 0.3rem 0.58rem;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    color: var(--color-text);
+    font-size: 0.68rem;
+    font-weight: 600;
+  }
+
+  .featured-project > a {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: fit-content;
+    margin-top: 1.25rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .other-work {
+    padding-top: clamp(5rem, 10vw, 8rem);
+  }
+
+  .other-work-heading {
+    display: grid;
+    grid-template-columns: minmax(110px, 0.3fr) minmax(0, 1.7fr);
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .other-work-heading > p:last-child {
+    max-width: 540px;
     margin: 0;
     color: var(--color-text-muted);
-    font-size: 0.94rem;
+  }
+
+  .project-list {
+    border-top: 1px solid var(--color-border-strong);
+  }
+
+  .project-row {
+    display: grid;
+    grid-template-columns: 4rem minmax(0, 1.4fr) minmax(180px, 0.6fr);
+    gap: clamp(1rem, 3vw, 2.5rem);
+    padding: 2.2rem 0;
+    border-bottom: 1px solid var(--color-border);
+    transition: background var(--transition-normal), padding var(--transition-normal);
+  }
+
+  .project-row:hover,
+  .project-row:focus-visible {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    background: rgba(255, 255, 255, 0.025);
+  }
+
+  .row-number,
+  .row-main > p:first-child,
+  .row-meta {
+    color: var(--color-text-muted);
+    font-size: 0.7rem;
+  }
+
+  .row-main > p:first-child {
+    margin: 0 0 0.5rem;
+    color: var(--color-accent);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .row-main h3 {
+    font-size: clamp(1.7rem, 3vw, 2.6rem);
+    line-height: 1.05;
+  }
+
+  .row-description {
+    max-width: 720px;
+    margin: 0.8rem 0 0;
+    line-height: 1.6;
+  }
+
+  .row-highlight {
+    max-width: 720px;
+    margin: 0.6rem 0 0;
+    color: var(--color-text-muted);
+    font-size: 0.84rem;
     line-height: 1.65;
   }
 
-  .pc-tags {
+  .row-meta {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    margin-top: auto;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-between;
+    text-align: right;
+    line-height: 1.6;
   }
 
-  .pc-tags span {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.28rem 0.55rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--border-radius-sm);
-    background: rgba(255, 255, 255, 0.04);
-    color: var(--color-text-muted);
-    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-    font-size: 0.74rem;
-    font-weight: 700;
-  }
-
-  .pc-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    color: var(--tone);
-    font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-    font-size: 0.82rem;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    opacity: 0.55;
-    transition: opacity var(--transition-normal);
-  }
-
-  .pc-prompt {
-    color: var(--tone);
-    font-weight: 800;
-  }
-
-  .project-card:hover .pc-link,
-  .project-card:focus-visible .pc-link {
-    opacity: 1;
+  .row-meta strong {
+    color: var(--color-signal);
+    font-size: 1.4rem;
+    font-weight: 400;
   }
 
   @media (max-width: 820px) {
-    .projects-head h2 {
-      font-size: 2.4rem;
+    .projects-head {
+      grid-template-columns: 1fr;
     }
 
-    .projects-grid {
+    .featured-projects {
       grid-template-columns: 1fr;
+    }
+
+    .featured-project {
+      min-height: 28rem;
     }
   }
 
-  @media (max-width: 480px) {
-    .projects-head h2 {
-      font-size: 2rem;
+  @media (max-width: 620px) {
+    .other-work-heading,
+    .project-row {
+      grid-template-columns: 1fr;
     }
 
-    .pc-title {
-      font-size: 1.35rem;
+    .project-row {
+      gap: 0.75rem;
+    }
+
+    .row-number {
+      display: none;
+    }
+
+    .row-meta {
+      align-items: flex-start;
+      gap: 1rem;
+      text-align: left;
     }
   }
 </style>

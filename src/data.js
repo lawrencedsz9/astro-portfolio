@@ -14,9 +14,9 @@ export const profile = {
   metaDescription:
     'Portfolio of Lawrence Robert Dsouza, a software engineer building backend systems, AI applications, real-time software, and computer vision projects.',
   hero: {
-    heading: 'Lawrence Dsouza',
+    heading: 'I turn ambitious AI prototypes into software people can actually use.',
     text:
-      'I design backend systems, AI workflows, and realtime experiences that move from prototype to usable product.',
+      'I am Lawrence, a software engineer in Doha working across backend architecture, voice AI, realtime applications, and computer vision.',
     tags: ['FastAPI backends', 'Agentic AI', 'Computer Vision'],
   },
 };
@@ -27,7 +27,7 @@ export const projects = [
     category: 'Backend + Digital Twin',
     period: 'Oct 2025 - Jan 2026',
     description:
-      'A workspace management platform with bookings, occupancy tracking, access management, and realtime facility analytics.',
+      'A workspace operations platform that brings bookings, occupancy, access management, and realtime facility analytics into one system.',
     highlight:
       'Built with Next.js, FastAPI, MongoDB, WebSockets, HVAC optimization, and RAG-based natural language querying.',
     link: 'https://github.com/lawrencedsz9/WMS',
@@ -38,7 +38,7 @@ export const projects = [
     category: 'Agentic Voice AI',
     period: 'Aug 2025 - Nov 2025',
     description:
-      'A low-latency voice AI assistant using FastAPI, LiveKit, WebRTC, and Gemini Realtime API.',
+      'A low-latency voice assistant that listens, reasons, calls tools, and responds naturally in realtime.',
     highlight:
       'Includes wake-word detection, async tool execution, and function calling for search, weather, and email automation.',
     link: 'https://github.com/lawrencedsz9/livekit-ai-agent',
@@ -49,7 +49,7 @@ export const projects = [
     category: 'Computer Vision',
     period: 'Personal Project',
     description:
-      'A realtime surveillance system with motion detection, face detection, automatic capture, and video recording.',
+      'A realtime camera-monitoring system that detects motion and faces, captures important events, and records searchable visitor activity.',
     highlight:
       'Uses timestamps and SQLite-backed visitor data to keep captured events organized and searchable.',
     link: 'https://github.com/lawrencedsz9/camAnalysis',
@@ -60,9 +60,9 @@ export const projects = [
     category: 'Computer Vision Search',
     period: 'Backend + AI',
     description:
-      'A face matching and image retrieval pipeline using Dlib embeddings and cosine similarity search.',
+      'An image-retrieval pipeline that detects faces, converts them into numerical embeddings, and ranks matching photos with cosine similarity.',
     highlight:
-      'Structured around detection, embedding generation, indexing, caching, and retrieval for maintainable search workflows.',
+      'The workflow separates detection, embedding generation, indexing, caching, and retrieval so large photo collections can be searched without recomputing every face.',
     link: 'https://github.com/lawrencedsz9',
     stack: ['Python', 'Dlib', 'OpenCV', 'Cosine Similarity'],
   },
@@ -71,7 +71,7 @@ export const projects = [
     category: 'Mobile App',
     period: 'Personal Project',
     description:
-      'A club management app for members, events, login, and realtime data storage.',
+      'A mobile club-management app for member accounts, events, authentication, and shared realtime information.',
     highlight:
       'Built Firebase-backed workflows for event tracking and member management.',
     link: 'https://github.com/lawrencedsz9/members-app',
@@ -82,7 +82,7 @@ export const projects = [
     category: 'Finance Tool',
     period: 'Personal Project',
     description:
-      'A student-focused budget tracker for managing expenses and improving day-to-day money visibility.',
+      'A student-focused budgeting tool for recording expenses, understanding spending patterns, and keeping day-to-day finances visible.',
     highlight:
       'Built as a lightweight finance workflow with React, Firebase, and a responsive Tailwind UI.',
     link: 'https://github.com/lawrencedsz9/stud-budget',

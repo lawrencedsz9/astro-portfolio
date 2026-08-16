@@ -1,36 +1,30 @@
 :root {
-  --color-primary: #060712;
-  --color-primary-rgb: 6, 7, 18;
-  --color-secondary: #10111f;
-  --color-tertiary: #171827;
-  --color-panel: rgba(18, 20, 35, 0.72);
-  --color-panel-strong: rgba(24, 26, 42, 0.92);
-  --color-border: rgba(245, 247, 255, 0.13);
-  --color-border-strong: rgba(245, 247, 255, 0.22);
-  --color-text: #f7f8ff;
-  --color-text-muted: #aeb6c8;
-  --color-accent: #f7f8ff;
-  --color-accent-rgb: 247, 248, 255;
-  --color-accent-cool: #38a3a5;
-  --color-accent-mint: #80ed99;
-  --color-accent-warm: #22577a;
-  --color-accent-coral: #57cc99;
-  --color-accent-violet: #c7f9cc;
-  --gradient-text: linear-gradient(90deg, #c7f9cc 0%, #80ed99 32%, #57cc99 64%, #38a3a5 100%);
-  --shadow-sm: 0 6px 16px rgba(0, 0, 0, 0.22);
-  --shadow-md: 0 18px 42px rgba(0, 0, 0, 0.32);
-  --shadow-lg: 0 30px 80px rgba(0, 0, 0, 0.44);
-  --border-radius-sm: 6px;
-  --border-radius-md: 8px;
-  --border-radius-lg: 8px;
+  --color-primary: #050506;
+  --color-secondary: #09090b;
+  --color-tertiary: #111115;
+  --color-panel: rgba(16, 16, 20, 0.82);
+  --color-panel-strong: #101014;
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-border-strong: rgba(255, 255, 255, 0.22);
+  --color-text: #f2f3ef;
+  --color-text-muted: #92959d;
+  --color-accent: #68d7ff;
+  --color-accent-dark: #2398c3;
+  --color-accent-soft: rgba(104, 215, 255, 0.16);
+  --color-signal: #f1d84b;
+  --color-signal-soft: rgba(241, 216, 75, 0.14);
+  --shadow-sm: 0 12px 32px rgba(0, 0, 0, 0.34);
+  --shadow-md: 0 30px 90px rgba(0, 0, 0, 0.5);
+  --border-radius-sm: 7px;
+  --border-radius-md: 18px;
+  --border-radius-lg: 30px;
   --space-xs: 0.25rem;
   --space-sm: 0.5rem;
   --space-md: 1rem;
   --space-lg: 2rem;
   --space-xl: 4rem;
-  --transition-fast: 0.18s ease;
-  --transition-normal: 0.26s ease;
-  --transition-slow: 0.5s ease;
+  --transition-fast: 0.16s ease;
+  --transition-normal: 0.28s ease;
 }
 
 *,
@@ -39,39 +33,26 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  letter-spacing: 0;
 }
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 6rem;
+  scroll-padding-top: 7rem;
   background: var(--color-primary);
 }
 
 body {
   min-height: 100vh;
   overflow-x: hidden;
-  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  font-size: 17px;
-  line-height: 1.65;
+  font-family: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
   color: var(--color-text);
   background:
-    linear-gradient(90deg, rgba(56, 163, 165, 0.07) 0 1px, transparent 1px 100%),
-    linear-gradient(180deg, rgba(128, 237, 153, 0.045) 0 1px, transparent 1px 100%),
-    linear-gradient(135deg, #060712 0%, #08161c 42%, #0a1a1e 68%, #060712 100%);
-  background-size: 48px 48px, 48px 48px, auto;
-  position: relative;
-}
-
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    linear-gradient(180deg, rgba(6, 7, 18, 0.06) 0%, rgba(6, 7, 18, 0.84) 74%, #060712 100%),
-    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.028) 0 1px, transparent 1px 18px);
+    radial-gradient(circle at 75% 26%, rgba(104, 215, 255, 0.05), transparent 28rem),
+    radial-gradient(circle at 18% 62%, rgba(241, 216, 75, 0.035), transparent 26rem),
+    var(--color-primary);
+  text-rendering: optimizeLegibility;
 }
 
 body.menu-open {
@@ -81,7 +62,6 @@ body.menu-open {
 a {
   color: inherit;
   text-decoration: none;
-  transition: color var(--transition-normal), background var(--transition-normal), border-color var(--transition-normal), transform var(--transition-normal), opacity var(--transition-normal);
 }
 
 button,
@@ -102,10 +82,6 @@ ul {
   list-style: none;
 }
 
-li {
-  line-height: 1.7;
-}
-
 h1,
 h2,
 h3,
@@ -113,26 +89,11 @@ h4,
 h5,
 h6 {
   margin: 0;
-  line-height: 1.06;
-  font-family: 'Space Grotesk', 'Inter', ui-sans-serif, system-ui, sans-serif;
-  font-weight: 800;
+  font-family: 'Space Grotesk', 'Manrope', sans-serif;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.045em;
   color: var(--color-text);
-}
-
-h1 {
-  font-size: 5.6rem;
-}
-
-h2 {
-  font-size: 3.3rem;
-}
-
-h3 {
-  font-size: 2rem;
-}
-
-h4 {
-  font-size: 1.35rem;
 }
 
 img,
@@ -147,91 +108,69 @@ img {
 }
 
 ::selection {
-  background: rgba(128, 237, 153, 0.28);
-  color: var(--color-text);
+  background: var(--color-accent);
+  color: #050506;
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-accent-cool);
+  outline: 2px solid var(--color-accent);
   outline-offset: 4px;
 }
 
 .container {
-  width: min(100% - 4rem, 1200px);
+  width: min(100% - 3rem, 1180px);
   margin: 0 auto;
 }
 
 .section-shell {
   position: relative;
-  z-index: 1;
-  padding: 6rem 0;
+  padding: clamp(5.5rem, 10vw, 9rem) 0;
 }
 
 .eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  margin: 0 0 0.85rem;
-  color: var(--color-accent-cool);
-  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
-  font-size: 0.82rem;
-  font-weight: 800;
+  margin: 0;
+  color: var(--color-accent);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
   line-height: 1.2;
   text-transform: uppercase;
-}
-
-.eyebrow::before {
-  content: '';
-  width: 0.65rem;
-  height: 0.65rem;
-  border-radius: 2px;
-  background: var(--color-accent-mint);
-  box-shadow: 0 0 18px rgba(128, 237, 153, 0.45);
 }
 
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.55rem;
+  gap: 0.7rem;
   min-height: 3rem;
-  padding: 0.78rem 1.05rem;
+  padding: 0.72rem 1.1rem;
   border: 1px solid var(--color-border-strong);
-  border-radius: var(--border-radius-md);
-  background: rgba(255, 255, 255, 0.06);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
   color: var(--color-text);
-  font-size: 0.96rem;
-  font-weight: 800;
+  font-size: 0.88rem;
+  font-weight: 600;
   cursor: pointer;
+  transition: color var(--transition-normal), background var(--transition-normal), border-color var(--transition-normal), transform var(--transition-normal);
 }
 
 .btn:hover,
 .btn:focus-visible {
   transform: translateY(-2px);
-  border-color: var(--color-accent-cool);
+  border-color: var(--color-accent);
 }
 
 .btn-primary {
-  background: var(--color-text);
-  border-color: var(--color-text);
-  color: var(--color-primary);
+  border-color: var(--color-accent);
+  background: var(--color-accent);
+  color: #050506;
 }
 
 .btn-primary:hover,
 .btn-primary:focus-visible {
-  background: var(--color-accent-mint);
-  border-color: var(--color-accent-mint);
-}
-
-.btn-outline {
-  background: rgba(255, 255, 255, 0.045);
-}
-
-.text-gradient {
-  background: var(--gradient-text);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  border-color: var(--color-signal);
+  background: var(--color-signal);
 }
 
 .visually-hidden {
@@ -246,100 +185,9 @@ img {
   border-width: 0;
 }
 
-.grid {
-  display: grid;
-  gap: var(--space-lg);
-}
-
-.grid-2 {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.grid-3 {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.grid-4 {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(1rem);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@media (max-width: 1024px) {
-  h1 {
-    font-size: 4.4rem;
-  }
-
-  h2 {
-    font-size: 2.7rem;
-  }
-
-  h3 {
-    font-size: 1.7rem;
-  }
-
-  .grid-4 {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 768px) {
-  body {
-    font-size: 16px;
-  }
-
-  h1 {
-    font-size: 3.35rem;
-  }
-
-  h2 {
-    font-size: 2.2rem;
-  }
-
-  h3 {
-    font-size: 1.45rem;
-  }
-
+@media (max-width: 720px) {
   .container {
-    width: min(100% - 2rem, 1200px);
-  }
-
-  .section-shell {
-    padding: 4.5rem 0;
-  }
-
-  .grid-2,
-  .grid-3,
-  .grid-4 {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 460px) {
-  h1 {
-    font-size: 2.7rem;
-  }
-
-  h2 {
-    font-size: 1.9rem;
-  }
-
-  .container {
-    width: min(100% - 1.5rem, 1200px);
-  }
-
-  .btn {
-    width: 100%;
+    width: min(100% - 2rem, 1180px);
   }
 }
 
